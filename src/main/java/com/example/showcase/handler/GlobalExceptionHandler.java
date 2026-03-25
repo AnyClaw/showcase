@@ -2,10 +2,12 @@ package com.example.showcase.handler;
 
 import com.example.showcase.exception.ProjectNotFoundException;
 import com.example.showcase.exception.UserNotFoundException;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

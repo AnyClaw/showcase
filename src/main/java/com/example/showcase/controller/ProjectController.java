@@ -1,29 +1,41 @@
 package com.example.showcase.controller;
 
 import com.example.showcase.dto.ProjectDTO;
-import com.example.showcase.service.ProjectService;
-import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/project")
-@RequiredArgsConstructor
-public class ProjectController {
-
-    private final ProjectService projectService;
+public interface ProjectController {
 
     @GetMapping("/all")
-    public List<ProjectDTO> findAllProjects() {
-        return projectService.getAllProjects();
-    }
+    @Operation(
+            summary = "Получение всех проектов",
+            description = """
+                    Получает всю информацию о всех проектах
+                    в базе данных
+                """
+    )
+    @ApiResponse(responseCode = "200", description = "Все данные получены")
+    Iterable<ProjectDTO> findAllProjects();
 
     @GetMapping("/{id}")
-    public ProjectDTO findProjectById(@PathVariable("id") int id) {
-        return projectService.getById(id);
-    }
+    @Operation(
+            summary = "Получение проекта по id",
+            description = """
+                    Получает всю информацию проекте по его id
+                """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Все данные получены"),
+            @ApiResponse(responseCode = "404", description = "Не найден проект по данному id")
+    })
+    ProjectDTO findProjectById(
+            @PathVariable("id") int id
+    );
 }
