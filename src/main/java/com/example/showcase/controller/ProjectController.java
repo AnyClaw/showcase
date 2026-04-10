@@ -1,6 +1,6 @@
 package com.example.showcase.controller;
 
-import com.example.showcase.dto.ProjectDTO;
+import com.example.showcase.dto.response.ProjectDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

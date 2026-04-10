@@ -1,6 +1,6 @@
 package com.example.showcase.service;
 
-import com.example.showcase.dto.UserDTO;
+import com.example.showcase.dto.response.UserDTO;
 import com.example.showcase.entity.User;
 import com.example.showcase.exception.UserNotFoundException;
 import com.example.showcase.mapper.UserMapper;

@@ -1,7 +1,7 @@
 package com.example.showcase.controller.impls;
 
 import com.example.showcase.controller.ProjectController;
-import com.example.showcase.dto.ProjectDTO;
+import com.example.showcase.dto.response.ProjectDTO;
 import com.example.showcase.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
