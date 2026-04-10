@@ -26,10 +26,10 @@ public class Project {
     private String department;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "project_status_id", nullable = false)
+    @JoinColumn(name = "status_id", nullable = false)
     private ProjectStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "user_id")
     private User owner;
 }

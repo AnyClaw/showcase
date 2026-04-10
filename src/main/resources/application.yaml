@@ -21,3 +21,10 @@ spring:
 logging:
   level:
     org.flywaydb: DEBUG
+jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION}
+    refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+    public-paths:
+      - /swagger-ui/**
+      - /v3/api-docs

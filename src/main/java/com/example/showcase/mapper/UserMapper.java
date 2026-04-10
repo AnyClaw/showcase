@@ -1,6 +1,6 @@
 package com.example.showcase.mapper;
 
-import com.example.showcase.dto.UserDTO;
+import com.example.showcase.dto.response.UserDTO;
 import com.example.showcase.entity.User;
 
 public class UserMapper {
