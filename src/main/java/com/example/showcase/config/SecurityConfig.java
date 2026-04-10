@@ -45,7 +45,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                publicPathsConfig.getPaths().toArray(new String[0])
+                                publicPathsConfig.getPublicPaths().toArray(new String[0])
                         )
                         .permitAll()
                         .requestMatchers(
