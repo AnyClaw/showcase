@@ -26,8 +26,6 @@ public class AuthService {
     private final JwtConfig jwtConfig;
     private final AuthUserDetailsService userDetailsService;
 
-    // TODO: вынести обработку исключений BadCredentialsException в ExceptionHandler
-    // TODO: сделать валидацию на DTO
     public JwtResponseDTO authenticateUser(LoginRequestDTO loginRequest) {
         log.debug("Попытка аутентификации пользователя: {}", loginRequest.username());
 
@@ -60,7 +58,7 @@ public class AuthService {
         String refreshToken = refreshTokenRequest.refreshToken();
 
         if (!jwtUtils.isTokenValid(refreshToken))
-            throw new TokenRefreshException("Refresh токен невалиден или истек");
+            throw new TokenRefreshException("Refresh token is invalid or expired");
 
         String username = jwtUtils.extractUsername(refreshToken);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);

@@ -24,7 +24,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
     private final AuthUserDetailsService userDetailsService;
-    private final JwtPublicPathsConfig publicPathsConfig;
 
     // Вызывается для всех защищенных эндпоинтов после shouldNotFilter()
     @Override
@@ -71,17 +70,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return headerAuth.substring(7);
 
         return null;
-    }
-
-    // вызывается сразу после поступления http запроса
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getServletPath();
-        boolean isPublic = publicPathsConfig.isPublic(path);
-
-        if (isPublic)
-            log.trace("Skipping JWT filter for public path: {}", path);
-
-        return isPublic;
     }
 }

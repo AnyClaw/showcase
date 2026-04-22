@@ -1,9 +1,6 @@
 package com.example.showcase.config;
 
-import com.example.showcase.enums.UserRoleName;
-import com.example.showcase.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.showcase.security.jwt.JwtAuthenticationFilter;
-import com.example.showcase.security.jwt.JwtPublicPathsConfig;
 import com.example.showcase.service.AuthUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,30 +26,18 @@ public class SecurityConfig {
 
     private final AuthUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final JwtAuthenticationEntryPoint unauthorizedHandler;
-    private final JwtPublicPathsConfig publicPathsConfig;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource())) TODO: настроить CORS
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(unauthorizedHandler)
-                )
+                .cors(AbstractHttpConfigurer::disable) //TODO: настроить CORS
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .anonymous(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                publicPathsConfig.getPublicPaths().toArray(new String[0])
-                        )
-                        .permitAll()
-                        .requestMatchers(
-                                "/api/admin/**"
-                        )
-                        .hasAuthority(UserRoleName.ADMINISTRATOR.name())
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
