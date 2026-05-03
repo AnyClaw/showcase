@@ -1,6 +1,6 @@
 package com.example.showcase.mapper;
 
-import com.example.showcase.dto.ProjectDTO;
+import com.example.showcase.dto.response.ProjectDTO;
 import com.example.showcase.entity.Project;
 
 public class ProjectMapper {

@@ -1,4 +1,4 @@
-package com.example.showcase.dto;
+package com.example.showcase.dto.response;
 
 import com.example.showcase.enums.ProjectStatusName;
 

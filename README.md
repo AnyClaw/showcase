@@ -69,6 +69,10 @@ DB_PORT=5432
 DB_DATABASE=postgres
 DB_USER=anyclaw
 DB_PASSWORD=1234
+
+JWT_SECRET=9GDUrUYCL5BwBxPB2FUxp0k0UU9sjc3O3Wlf2LQOP1yB9iSOiRY3N21JLTjfi252faCCOa6hi0N4vAjHqJVd1w==
+JWT_EXPIRATION=180000           # 3 минута
+JWT_REFRESH_EXPIRATION=1200000    # 10 минут
 ```
 
 ### Миграция Flyway
@@ -82,7 +86,7 @@ DB_PASSWORD=1234
 - 1 - номер версии (меняется вместе с версией)
 - __ - два нижних подчёркивания (обязательно)
 - Init_DB - краткое описание версии (меняется вместе с версией)
-- 
+
 **Важно:** никогда не изменяйте уже существующие файлы миграций. Только создавать новые!
 Для создания новой версии:
 1. Создать файл `V2__add_new_column.sql`

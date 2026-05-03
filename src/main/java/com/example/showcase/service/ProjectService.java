@@ -1,6 +1,6 @@
 package com.example.showcase.service;
 
-import com.example.showcase.dto.ProjectDTO;
+import com.example.showcase.dto.response.ProjectDTO;
 import com.example.showcase.entity.Project;
 import com.example.showcase.exception.ProjectNotFoundException;
 import com.example.showcase.mapper.ProjectMapper;
