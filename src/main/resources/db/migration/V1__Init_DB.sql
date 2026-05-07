@@ -82,7 +82,7 @@ CREATE TABLE projects (
 CREATE TABLE project_stages (
     stage_id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     project_id int NOT NULL,
-    team_id int NOT NULL,
+    team_id int,
     status_id int NOT NULL default 1,
     start_time TIMESTAMPTZ not null default CURRENT_TIMESTAMP,
     end_time TIMESTAMPTZ ,
