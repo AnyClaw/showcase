@@ -25,11 +25,3 @@ jwt:
     secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION}
     refresh-expiration: ${JWT_REFRESH_EXPIRATION}
-    public-paths:
-      - /swagger-ui/**
-      - /swagger-ui.html
-      - /v3/api-docs/**
-      - /swagger-resources/**
-      - /webjars/**
-      - /api/project/**
-      - /api/auth/**
