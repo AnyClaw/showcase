@@ -1,22 +1,15 @@
 package com.example.showcase.mapper;
 
-import com.example.showcase.dto.response.ProjectDTO;
+import com.example.showcase.dto.request.ProjectRequestDTO;
+import com.example.showcase.dto.response.ProjectResponseDTO;
 import com.example.showcase.entity.Project;
+import org.mapstruct.Mapper;
 
-public class ProjectMapper {
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
+public interface ProjectMapper {
 
-    private ProjectMapper(){}
+//    @Mapping(source = "status.name", target = "status")
+    ProjectResponseDTO toDto(Project project);
 
-    public static ProjectDTO entityToDto(Project entity) {
-        return new ProjectDTO(
-                entity.getId(),
-                entity.getTitle(),
-                entity.getTarget(),
-                entity.getBarrier(),
-                entity.getExistingSolution(),
-                entity.getDepartment(),
-                entity.getStatus().getName(),
-                UserMapper.entityToDto(entity.getOwner())
-        );
-    }
+    Project toEntity(ProjectRequestDTO projectRequestDTO);
 }
