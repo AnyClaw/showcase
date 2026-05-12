@@ -8,7 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface ProjectMapper {
 
-//    @Mapping(source = "status.name", target = "status")
     ProjectResponseDTO toDto(Project project);
 
     Project toEntity(ProjectRequestDTO projectRequestDTO);

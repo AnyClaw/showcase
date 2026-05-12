@@ -2,6 +2,7 @@ package com.example.showcase.controller;
 
 import com.example.showcase.dto.request.ProjectRequestDTO;
 import com.example.showcase.dto.response.ProjectResponseDTO;
+import com.example.showcase.enums.ProjectStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -9,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/project")
+@RequestMapping("/api/projects")
 public interface ProjectController {
 
     @GetMapping("/all")
@@ -42,4 +43,15 @@ public interface ProjectController {
     @PreAuthorize("hasAuthority('CLIENT')")
     @PostMapping("/add")
     ProjectResponseDTO addProject(@RequestBody ProjectRequestDTO projectDTO);
+
+    @GetMapping()
+    Iterable<ProjectResponseDTO> findProjects(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "2") Integer size,
+            @RequestParam(required = false) ProjectStatus projectStatus,
+            @RequestParam(required = false) String projectType,
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Integer teamId
+    );
 }

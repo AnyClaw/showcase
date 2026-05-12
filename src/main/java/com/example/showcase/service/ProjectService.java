@@ -9,8 +9,12 @@ import com.example.showcase.exception.ProjectNotFoundException;
 import com.example.showcase.mapper.ProjectMapper;
 import com.example.showcase.repository.ProjectsRepository;
 import com.example.showcase.repository.UserRepository;
+import com.example.showcase.specification.ProjectSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -63,5 +67,25 @@ public class ProjectService {
         project.setStatus(ProjectStatus.ON_VERIFICATION);
 
         return projectMapper.toDto(projectsRepository.save(project));
+    }
+
+    public Iterable<ProjectResponseDTO> findProjects(
+            Integer page, Integer size, ProjectStatus projectStatus,
+            String projectType, String department, String title, Integer teamId
+    ) {
+        log.info(
+                "{}, {}, {}, {}, {}, {}, {}",
+                page, size, projectStatus, projectType, department, title, teamId
+        );
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Specification<Project> specification = ProjectSpecification.buildFilter(
+                projectStatus, projectType, department, title
+        );
+        Page<Project> response = projectsRepository.findAll(specification, pageRequest);
+
+        return response.getContent().stream()
+                .map(projectMapper::toDto)
+                .toList();
     }
 }

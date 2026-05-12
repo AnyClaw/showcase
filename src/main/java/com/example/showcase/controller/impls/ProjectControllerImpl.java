@@ -3,6 +3,7 @@ package com.example.showcase.controller.impls;
 import com.example.showcase.controller.ProjectController;
 import com.example.showcase.dto.request.ProjectRequestDTO;
 import com.example.showcase.dto.response.ProjectResponseDTO;
+import com.example.showcase.enums.ProjectStatus;
 import com.example.showcase.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +27,13 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     public ProjectResponseDTO addProject(ProjectRequestDTO projectDTO) {
         return projectService.addProject(projectDTO);
+    }
+
+    @Override
+    public Iterable<ProjectResponseDTO> findProjects(
+            Integer page, Integer size, ProjectStatus projectStatus,
+            String projectType, String department, String title, Integer teamId
+    ) {
+        return projectService.findProjects(page, size, projectStatus, projectType, department, title, teamId);
     }
 }
