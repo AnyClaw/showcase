@@ -2,6 +2,7 @@ package com.example.showcase.controller.impls;
 
 import com.example.showcase.controller.ProjectController;
 import com.example.showcase.dto.request.ProjectRequestDTO;
+import com.example.showcase.dto.response.PageResponse;
 import com.example.showcase.dto.response.ProjectResponseDTO;
 import com.example.showcase.enums.ProjectStatus;
 import com.example.showcase.service.ProjectService;
@@ -15,11 +16,6 @@ public class ProjectControllerImpl implements ProjectController {
     private final ProjectService projectService;
 
     @Override
-    public Iterable<ProjectResponseDTO> findAllProjects() {
-        return projectService.getAllProjects();
-    }
-
-    @Override
     public ProjectResponseDTO findProjectById(int id) {
         return projectService.getById(id);
     }
@@ -30,10 +26,10 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     @Override
-    public Iterable<ProjectResponseDTO> findProjects(
-            Integer page, Integer size, ProjectStatus projectStatus,
-            String projectType, String department, String title, Integer teamId
+    public PageResponse<ProjectResponseDTO> findProjects(
+            Integer page, Integer size, ProjectStatus status,
+            String type, String department, String title, Integer teamId
     ) {
-        return projectService.findProjects(page, size, projectStatus, projectType, department, title, teamId);
+        return projectService.findProjects(page, size, status, type, department, title, teamId);
     }
 }

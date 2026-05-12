@@ -1,6 +1,7 @@
 package com.example.showcase.service;
 
 import com.example.showcase.dto.request.ProjectRequestDTO;
+import com.example.showcase.dto.response.PageResponse;
 import com.example.showcase.dto.response.ProjectResponseDTO;
 import com.example.showcase.entity.Project;
 import com.example.showcase.entity.User;
@@ -19,9 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -30,14 +28,6 @@ public class ProjectService {
     private final ProjectsRepository projectsRepository;
     private final UserRepository userRepository;
     private final ProjectMapper projectMapper;
-
-    public List<ProjectResponseDTO> getAllProjects() {
-        Iterable<Project> projects = projectsRepository.findAll();
-
-        return StreamSupport.stream(projects.spliterator(), false)
-                .map(projectMapper::toDto)
-                .toList();
-    }
 
     public ProjectResponseDTO getById(int id) {
         return projectMapper.toDto(projectsRepository
@@ -69,23 +59,17 @@ public class ProjectService {
         return projectMapper.toDto(projectsRepository.save(project));
     }
 
-    public Iterable<ProjectResponseDTO> findProjects(
-            Integer page, Integer size, ProjectStatus projectStatus,
-            String projectType, String department, String title, Integer teamId
+    public PageResponse<ProjectResponseDTO> findProjects(
+            Integer page, Integer size, ProjectStatus status,
+            String type, String department, String title, Integer teamId
     ) {
-        log.info(
-                "{}, {}, {}, {}, {}, {}, {}",
-                page, size, projectStatus, projectType, department, title, teamId
-        );
-
         PageRequest pageRequest = PageRequest.of(page, size);
         Specification<Project> specification = ProjectSpecification.buildFilter(
-                projectStatus, projectType, department, title
+                status, type, department, title
         );
+
         Page<Project> response = projectsRepository.findAll(specification, pageRequest);
 
-        return response.getContent().stream()
-                .map(projectMapper::toDto)
-                .toList();
+        return PageResponse.from(response.map(projectMapper::toDto));
     }
 }

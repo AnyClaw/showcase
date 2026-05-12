@@ -97,7 +97,7 @@ public interface AuthController {
                     description = "Новый access токен успешно сгенерирован",
                     content = @Content(
                             mediaType = "application/json",
-                            examples = @ExampleObject(value = """
+                            examples = @ExampleObject("""
                                     {
                                         "accessToken": "eyJhbGciOiJIUzUxMiJ9...",
                                         "refreshToken": "eyJhbGciOiJIUzUxMiJ9...",
@@ -111,7 +111,7 @@ public interface AuthController {
                     description = "Refresh токен не представлен",
                     content = @Content(
                             mediaType = "application/json",
-                            examples = @ExampleObject(value = """
+                            examples = @ExampleObject("""
                                     {
                                         "timestamp": "2026-05-03T15:19:26.4979394",
                                         "status": 400,
@@ -128,7 +128,7 @@ public interface AuthController {
                     description = "Refresh токен невалиден или истек",
                     content = @Content(
                             mediaType = "application/json",
-                            examples = @ExampleObject(value = """
+                            examples = @ExampleObject("""
                                     {
                                         "timestamp": "2026-05-03T15:20:15.3765931",
                                         "status": 401,
