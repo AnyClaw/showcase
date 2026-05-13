@@ -83,7 +83,7 @@ public interface ProjectController {
             @PathVariable("id") int id
     );
 
-    // тестовый эндпоинт, потом удалить
+    // TODO: добавить запись в project_stage при создании проекта; SWAGGER документация
     @PreAuthorize("hasAuthority('CLIENT')")
     @PostMapping("/add")
     ProjectResponseDTO addProject(@RequestBody ProjectRequestDTO projectDTO);

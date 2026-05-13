@@ -36,19 +36,15 @@ public class ProjectService {
         );
     }
 
-    // тестовый метод, потом удалить
     public ProjectResponseDTO addProject(ProjectRequestDTO projectDTO) {
         Project project = projectMapper.toEntity(projectDTO);
-        log.info("Результат маппинга из дто в сущность: {}", project);
 
-        // Получение информации об аутентифицированном пользователе, обязательно для защищенных эндпоинтов
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new SecurityException("User not authenticated");
         }
 
-        // в getName() хранится уникальный идентификатор пользователя (не id), в нашем случае это email
         String email = authentication.getName();
         log.info("Полученное из токена имя пользователя: {}", email);
 
