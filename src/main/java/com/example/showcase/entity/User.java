@@ -1,5 +1,6 @@
 package com.example.showcase.entity;
 
+import com.example.showcase.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,15 +34,14 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     private Integer groupId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getName().toString()));
+        return List.of(new SimpleGrantedAuthority(role.toString()));
     }
 
     @Override

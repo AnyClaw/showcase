@@ -1,13 +1,13 @@
 package com.example.showcase.dto.response;
 
-import com.example.showcase.enums.UserRoleName;
+import com.example.showcase.enums.UserRole;
 
-public record UserDTO(
+public record UserResponseDTO(
         Integer id,
         String firstName,
         String lastName,
         String middleName,
         String phoneNumber,
         String email,
-        UserRoleName role
+        UserRole role
 ){}

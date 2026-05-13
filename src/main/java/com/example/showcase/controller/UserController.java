@@ -1,10 +1,9 @@
 package com.example.showcase.controller;
 
-import com.example.showcase.dto.response.UserDTO;
+import com.example.showcase.dto.response.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +23,7 @@ public interface UserController {
                 """
     )
     @ApiResponse(responseCode = "200", description = "Все данные получены")
-    Iterable<UserDTO> findAllUsers();
+    Iterable<UserResponseDTO> findAllUsers();
 
     @GetMapping("/{id}")
     @Operation(
@@ -38,7 +37,7 @@ public interface UserController {
             @ApiResponse(responseCode = "200", description = "Все данные получены"),
             @ApiResponse(responseCode = "404", description = "Не найден пользователь по данному id")
     })
-    UserDTO findUserById(
+    UserResponseDTO findUserById(
             @PathVariable("id") int id
     );
 }

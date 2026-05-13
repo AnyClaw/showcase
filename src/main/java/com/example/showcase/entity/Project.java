@@ -1,5 +1,6 @@
 package com.example.showcase.entity;
 
+import com.example.showcase.enums.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,8 +26,8 @@ public class Project {
     private String projectType;
     private String department;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "status_id", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "project_status")
     private ProjectStatus status;
 
     @ManyToOne

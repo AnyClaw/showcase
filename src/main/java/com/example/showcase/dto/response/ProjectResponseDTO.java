@@ -1,14 +1,15 @@
 package com.example.showcase.dto.response;
 
-import com.example.showcase.enums.ProjectStatusName;
+import com.example.showcase.enums.ProjectStatus;
 
-public record ProjectDTO(
+public record ProjectResponseDTO(
         Integer id,
         String title,
         String target,
         String barrier,
         String existingSolution,
         String department,
-        ProjectStatusName status,
-        UserDTO owner
+        String projectType,
+        ProjectStatus status,
+        UserResponseDTO owner
 ) { }
