@@ -30,16 +30,17 @@ refresh token и время жизни access токена
 
 **Метод:** GET  
 
-**URL:** `api/projects?page={page}&project_status={status}&project_type={type}&department={department}&title={title}&teamId={teamId}`
+**URL:** `api/projects?page={page}&size={size}&project-status={status}&project-type={type}&department={department}&title={title}&teamId={teamId}`
 
-**Описание:** отображение краткой информации о проектах(название, кафедра, цель, тип проекта, 
+**Описание:** отображение краткой информации о проектах (название, кафедра, цель, тип проекта, 
 статус) на главной странице с пагинацией и поиском по названию (кроме проектов со статусом
 ON_VERIFICATION)  
 
 **Параметры запроса**:
 * `page` - число, необязательный (по умолчанию 1)
-* `project_status` - строка, необязательный
-* `project_type` - строка, необязательный
+* `size` - число, необязательный (по умолчанию 9)
+* `project-status` - строка, необязательный
+* `project-type` - строка, необязательный
 * `department` - строка, необязательный
 * `title` - строка, необязательный
 * `teamId` - число, необязательный

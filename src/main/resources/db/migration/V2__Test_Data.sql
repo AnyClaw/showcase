@@ -1,196 +1,396 @@
 -- Вставка преподавателей (сначала нужно создать преподавателей, чтобы привязать их к группам)
 -- Преподаватели получат ID 1-6
-INSERT INTO users (first_name, last_name, middle_name, password, phone_number, email, role_id, group_id)
+INSERT INTO users (first_name, last_name, middle_name, password, phone_number, email, role, group_id)
 VALUES
-    ('Артем', 'Беляев', 'Викторович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234585', 'artem.belyaev@example.com', 4, NULL),
-    ('Екатерина', 'Воробьева', 'Алексеевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234586', 'ekaterina.vorobyeva@example.com', 4, NULL),
-    ('Денис', 'Григорьев', 'Сергеевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234587', 'denis.grigoriev@example.com', 4, NULL),
-    ('Марина', 'Дмитриева', 'Игоревна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234588', 'marina.dmitrieva@example.com', 4, NULL),
-    ('Роман', 'Егоров', 'Петрович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234589', 'roman.egorov@example.com', 4, NULL),
-    ('Светлана', 'Жукова', 'Андреевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234590', 'svetlana.zhukova@example.com', 4, NULL);
+    ('Артем', 'Беляев', 'Викторович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234585', 'artem.belyaev@example.com', 'TEACHER', NULL),
+    ('Екатерина', 'Воробьева', 'Алексеевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234586', 'ekaterina.vorobyeva@example.com', 'TEACHER', NULL),
+    ('Денис', 'Григорьев', 'Сергеевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234587', 'denis.grigoriev@example.com', 'TEACHER', NULL),
+    ('Марина', 'Дмитриева', 'Игоревна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234588', 'marina.dmitrieva@example.com', 'TEACHER', NULL),
+    ('Роман', 'Егоров', 'Петрович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234589', 'roman.egorov@example.com', 'TEACHER', NULL),
+    ('Светлана', 'Жукова', 'Андреевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234590', 'svetlana.zhukova@example.com', 'TEACHER', NULL);
 
 -- Вставка групп (теперь с указанием преподавателя - user_id от 1 до 6)
-INSERT INTO groups (user_id, group_name, is_group_active)
+INSERT INTO groups (user_id, group_name)
 VALUES
-    (1, 'УВП-211', true),  -- Преподаватель Артем Беляев
-    (1, 'УВП-212', true),  -- Преподаватель Артем Беляев (ведет обе группы УВП)
-    (2, 'УИС-311', true),  -- Преподаватель Екатерина Воробьева
-    (2, 'УИС-312', true),  -- Преподаватель Екатерина Воробьева (ведет обе группы УИС)
-    (3, 'УВВ-411', true),  -- Преподаватель Денис Григорьев
-    (3, 'УВВ-412', true);  -- Преподаватель Денис Григорьев (ведет обе группы УВВ)
+    (1, 'УВП-211'),  -- Преподаватель Артем Беляев
+    (1, 'УВП-212'),  -- Преподаватель Артем Беляев (ведет обе группы УВП)
+    (2, 'УИС-311'),  -- Преподаватель Екатерина Воробьева
+    (2, 'УИС-312'),  -- Преподаватель Екатерина Воробьева (ведет обе группы УИС)
+    (3, 'УВВ-411'),  -- Преподаватель Денис Григорьев
+    (3, 'УВВ-412');  -- Преподаватель Денис Григорьев (ведет обе группы УВВ)
 
 -- Вставка студентов (получат ID 7-41)
-INSERT INTO users (first_name, last_name, middle_name, password, phone_number, email, role_id, group_id)
+INSERT INTO users (first_name, last_name, middle_name, password, phone_number, email, role, group_id)
 VALUES
     -- Группа УВП-211 (6 человек, group_id = 1)
-    ('Иван', 'Петров', 'Алексеевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234567', 'ivan.petrov@example.com', 2, 1),
-    ('Мария', 'Сидорова', 'Ивановна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234568', 'maria.sidorova@example.com', 2, 1),
-    ('Алексей', 'Кузнецов', 'Сергеевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234569', 'alexey.kuznetsov@example.com', 2, 1),
-    ('Елена', 'Соколова', 'Дмитриевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234570', 'elena.sokolova@example.com', 2, 1),
-    ('Дмитрий', 'Михайлов', 'Андреевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234571', 'dmitry.mikhailov@example.com', 2, 1),
-    ('Юлия', 'Новикова', 'Сергеевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234600', 'yulia.novikova@example.com', 2, 1), -- ID 13
+    ('Иван', 'Петров', 'Алексеевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234567', 'ivan.petrov@example.com', 'STUDENT', 1),
+    ('Мария', 'Сидорова', 'Ивановна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234568', 'maria.sidorova@example.com', 'STUDENT', 1),
+    ('Алексей', 'Кузнецов', 'Сергеевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234569', 'alexey.kuznetsov@example.com', 'STUDENT', 1),
+    ('Елена', 'Соколова', 'Дмитриевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234570', 'elena.sokolova@example.com', 'STUDENT', 1),
+    ('Дмитрий', 'Михайлов', 'Андреевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234571', 'dmitry.mikhailov@example.com', 'STUDENT', 1),
+    ('Юлия', 'Новикова', 'Сергеевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234600', 'yulia.novikova@example.com', 'STUDENT', 1), -- ID 13
 
     -- Группа УВП-212 (5 человек, group_id = 2)
-    ('Анна', 'Федорова', 'Владимировна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234572', 'anna.fedorova@example.com', 2, 2), -- ID 14
-    ('Сергей', 'Морозов', 'Павлович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234573', 'sergey.morozov@example.com', 2, 2), -- ID 15
-    ('Татьяна', 'Волкова', 'Николаевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234574', 'tatyana.volkova@example.com', 2, 2), -- ID 16
-    ('Николай', 'Алексеев', 'Евгеньевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234575', 'nikolay.alekseev@example.com', 2, 2), -- ID 17
-    ('Ольга', 'Лебедева', 'Борисовна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234576', 'olga.lebedeva@example.com', 2, 2), -- ID 18
+    ('Анна', 'Федорова', 'Владимировна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234572', 'anna.fedorova@example.com', 'STUDENT', 2), -- ID 14
+    ('Сергей', 'Морозов', 'Павлович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234573', 'sergey.morozov@example.com', 'STUDENT', 2), -- ID 15
+    ('Татьяна', 'Волкова', 'Николаевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234574', 'tatyana.volkova@example.com', 'STUDENT', 2), -- ID 16
+    ('Николай', 'Алексеев', 'Евгеньевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234575', 'nikolay.alekseev@example.com', 'STUDENT', 2), -- ID 17
+    ('Ольга', 'Лебедева', 'Борисовна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234576', 'olga.lebedeva@example.com', 'STUDENT', 2), -- ID 18
 
     -- Группа УИС-311 (5 человек, group_id = 3)
-    ('Павел', 'Козлов', 'Станиславович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234577', 'pavel.kozlov@example.com', 2, 3), -- ID 19
-    ('Наталья', 'Егорова', 'Григорьевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234578', 'natalya.egorova@example.com', 2, 3), -- ID 20
-    ('Владимир', 'Семенов', 'Романович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234579', 'vladimir.semenov@example.com', 2, 3), -- ID 21
-    ('Ирина', 'Павлова', 'Юрьевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234580', 'irina.pavlova@example.com', 2, 3), -- ID 22
-    ('Максим', 'Андреев', 'Васильевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234581', 'maxim.andreev@example.com', 2, 3), -- ID 23
+    ('Павел', 'Козлов', 'Станиславович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234577', 'pavel.kozlov@example.com', 'STUDENT', 3), -- ID 19
+    ('Наталья', 'Егорова', 'Григорьевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234578', 'natalya.egorova@example.com', 'STUDENT', 3), -- ID 20
+    ('Владимир', 'Семенов', 'Романович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234579', 'vladimir.semenov@example.com', 'STUDENT', 3), -- ID 21
+    ('Ирина', 'Павлова', 'Юрьевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234580', 'irina.pavlova@example.com', 'STUDENT', 3), -- ID 22
+    ('Максим', 'Андреев', 'Васильевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234581', 'maxim.andreev@example.com', 'STUDENT', 3), -- ID 23
 
     -- Группа УИС-312 (5 человек, group_id = 4)
-    ('Андрей', 'Соловьев', 'Михайлович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234601', 'andrey.soloviev@example.com', 2, 4), -- ID 24
-    ('Ксения', 'Тихонова', 'Алексеевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234602', 'kseniya.tihonova@example.com', 2, 4), -- ID 25
-    ('Евгений', 'Фомичев', 'Иванович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234603', 'evgeniy.fomichev@example.com', 2, 4), -- ID 26
-    ('Людмила', 'Чернова', 'Петровна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234604', 'lyudmila.chernova@example.com', 2, 4), -- ID 27
-    ('Григорий', 'Шевцов', 'Владимирович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234605', 'grigoriy.shevtsov@example.com', 2, 4), -- ID 28
+    ('Андрей', 'Соловьев', 'Михайлович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234601', 'andrey.soloviev@example.com', 'STUDENT', 4), -- ID 24
+    ('Ксения', 'Тихонова', 'Алексеевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234602', 'kseniya.tihonova@example.com', 'STUDENT', 4), -- ID 25
+    ('Евгений', 'Фомичев', 'Иванович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234603', 'evgeniy.fomichev@example.com', 'STUDENT', 4), -- ID 26
+    ('Людмила', 'Чернова', 'Петровна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234604', 'lyudmila.chernova@example.com', 'STUDENT', 4), -- ID 27
+    ('Григорий', 'Шевцов', 'Владимирович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234605', 'grigoriy.shevtsov@example.com', 'STUDENT', 4), -- ID 28
 
     -- Группа УВВ-411 (5 человек, group_id = 5)
-    ('Валентин', 'Щербаков', 'Константинович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234606', 'valentin.sherbakov@example.com', 2, 5), -- ID 29
-    ('Альбина', 'Яковлева', 'Дмитриевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234607', 'albina.yakovleva@example.com', 2, 5), -- ID 30
-    ('Виктор', 'Баранов', 'Николаевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234608', 'viktor.baranov@example.com', 2, 5), -- ID 31
-    ('Евдокия', 'Ермакова', 'Семеновна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234609', 'evdokiya.ermakova@example.com', 2, 5), -- ID 32
-    ('Станислав', 'Гусев', 'Анатольевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234610', 'stanislav.gusev@example.com', 2, 5), -- ID 33
+    ('Валентин', 'Щербаков', 'Константинович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234606', 'valentin.sherbakov@example.com', 'STUDENT', 5), -- ID 29
+    ('Альбина', 'Яковлева', 'Дмитриевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234607', 'albina.yakovleva@example.com', 'STUDENT', 5), -- ID 30
+    ('Виктор', 'Баранов', 'Николаевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234608', 'viktor.baranov@example.com', 'STUDENT', 5), -- ID 31
+    ('Евдокия', 'Ермакова', 'Семеновна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234609', 'evdokiya.ermakova@example.com', 'STUDENT', 5), -- ID 32
+    ('Станислав', 'Гусев', 'Анатольевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234610', 'stanislav.gusev@example.com', 'STUDENT', 5), -- ID 33
 
     -- Группа УВВ-412 (5 человек, group_id = 6)
-    ('Оксана', 'Крылова', 'Васильевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234611', 'oksana.krylova@example.com', 2, 6), -- ID 34
-    ('Эдуард', 'Маслов', 'Робертович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234612', 'eduard.maslov@example.com', 2, 6), -- ID 35
-    ('Зинаида', 'Осипова', 'Витальевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234613', 'zinaida.osipova@example.com', 2, 6), -- ID 36
-    ('Илья', 'Поляков', 'Сергеевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234614', 'ilya.polyakov@example.com', 2, 6), -- ID 37
-    ('Тамара', 'Рябова', 'Ефимовна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234615', 'tamara.ryabova@example.com', 2, 6); -- ID 38
+    ('Оксана', 'Крылова', 'Васильевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234611', 'oksana.krylova@example.com', 'STUDENT', 6), -- ID 34
+    ('Эдуард', 'Маслов', 'Робертович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234612', 'eduard.maslov@example.com', 'STUDENT', 6), -- ID 35
+    ('Зинаида', 'Осипова', 'Витальевна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234613', 'zinaida.osipova@example.com', 'STUDENT', 6), -- ID 36
+    ('Илья', 'Поляков', 'Сергеевич', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234614', 'ilya.polyakov@example.com', 'STUDENT', 6), -- ID 37
+    ('Тамара', 'Рябова', 'Ефимовна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234615', 'tamara.ryabova@example.com', 'STUDENT', 6); -- ID 38
 
 -- Вставка заказчиков (роль CLIENT) получат ID 39, 40
-INSERT INTO users (first_name, last_name, middle_name, password, phone_number, email, role_id, group_id)
+INSERT INTO users (first_name, last_name, middle_name, password, phone_number, email, role, group_id)
 VALUES
-    ('Кирилл', 'Никитин', 'Александрович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234582', 'kirill.nikitin@example.com', 3, NULL),
-    ('Вероника', 'Тимофеева', 'Валентиновна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234583', 'veronika.timofeeva@example.com', 3, NULL);
+    ('Кирилл', 'Никитин', 'Александрович', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234582', 'kirill.nikitin@example.com', 'CLIENT', NULL),
+    ('Вероника', 'Тимофеева', 'Валентиновна', '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234583', 'veronika.timofeeva@example.com', 'CLIENT', NULL);
 
 -- Вставка администратора (получит ID 41)
-INSERT INTO users (first_name, last_name, middle_name, password, phone_number, email, role_id, group_id)
+INSERT INTO users (first_name, last_name, middle_name, password, phone_number, email, role, group_id)
 VALUES
-    ('admin', 'admin', NULL, '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234584', 'admin@example.com', 1, NULL);
+    ('admin', 'admin', NULL, '$2a$10$Pb7zDts8YzPzaFXeUf8DguK1AGMuN/M/9FERvrQRTNP6c4MpscfD2', '+79161234584', 'admin@example.com', 'ADMINISTRATOR', NULL);
 
 -- Вставка команд (получат ID 1-6)
-INSERT INTO teams (team_name, is_team_active)
+INSERT INTO teams (team_name)
 VALUES
-    ('Команда "Инноваторы"', true),
-    ('Команда "Техногении"', true),
-    ('Команда "Киберкреатив"', true),
-    ('Команда "Айтишники"', true),
-    ('Команда "Цифровые пионеры"', true),
-    ('Команда "Алгоритм"', true);
+    ('Команда "Инноваторы"'),
+    ('Команда "Техногении"'),
+    ('Команда "Киберкреатив"'),
+    ('Команда "Айтишники"'),
+    ('Команда "Цифровые пионеры"'),
+    ('Команда "Алгоритм"');
 
 -- Назначение участников в команды (только из одной группы)
-INSERT INTO team_members (team_id, user_id, is_leader, joined_at)
+INSERT INTO team_members (team_id, user_id, is_leader)
 VALUES
     -- Команда "Инноваторы" (из группы УВП-211, студенты с id 7-12)
-    (1, 7, true, CURRENT_TIMESTAMP),   -- Иван Петров - лидер
-    (1, 8, false, CURRENT_TIMESTAMP),  -- Мария Сидорова
-    (1, 9, false, CURRENT_TIMESTAMP),  -- Алексей Кузнецов
-    (1, 10, false, CURRENT_TIMESTAMP), -- Елена Соколова
-    (1, 11, false, CURRENT_TIMESTAMP), -- Дмитрий Михайлов
-    (1, 12, false, CURRENT_TIMESTAMP), -- Юлия Новикова
+    (1, 7, true),   -- Иван Петров - лидер
+    (1, 8, false),  -- Мария Сидорова
+    (1, 9, false),  -- Алексей Кузнецов
+    (1, 10, false), -- Елена Соколова
+    (1, 11, false), -- Дмитрий Михайлов
+    (1, 12, false), -- Юлия Новикова
 
     -- Команда "Техногении" (из группы УВП-212, студенты с id 13-18)
-    (2, 13, true, CURRENT_TIMESTAMP),  -- Анна Федорова - лидер
-    (2, 14, false, CURRENT_TIMESTAMP), -- Сергей Морозов
-    (2, 15, false, CURRENT_TIMESTAMP), -- Татьяна Волкова
-    (2, 16, false, CURRENT_TIMESTAMP), -- Николай Алексеев
-    (2, 17, false, CURRENT_TIMESTAMP), -- Ольга Лебедева
+    (2, 13, true),  -- Анна Федорова - лидер
+    (2, 14, false), -- Сергей Морозов
+    (2, 15, false), -- Татьяна Волкова
+    (2, 16, false), -- Николай Алексеев
+    (2, 17, false), -- Ольга Лебедева
 
     -- Команда "Киберкреатив" (из группы УИС-311, студенты с id 19-23)
-    (3, 18, true, CURRENT_TIMESTAMP),  -- Павел Козлов - лидер
-    (3, 19, false, CURRENT_TIMESTAMP), -- Наталья Егорова
-    (3, 20, false, CURRENT_TIMESTAMP), -- Владимир Семенов
-    (3, 21, false, CURRENT_TIMESTAMP), -- Ирина Павлова
-    (3, 22, false, CURRENT_TIMESTAMP), -- Максим Андреев
+    (3, 18, true),  -- Павел Козлов - лидер
+    (3, 19, false), -- Наталья Егорова
+    (3, 20, false), -- Владимир Семенов
+    (3, 21, false), -- Ирина Павлова
+    (3, 22, false), -- Максим Андреев
 
     -- Команда "Айтишники" (из группы УИС-312, студенты с id 24-28)
-    (4, 23, true, CURRENT_TIMESTAMP),  -- Андрей Соловьев - лидер
-    (4, 24, false, CURRENT_TIMESTAMP), -- Ксения Тихонова
-    (4, 25, false, CURRENT_TIMESTAMP), -- Евгений Фомичев
-    (4, 26, false, CURRENT_TIMESTAMP), -- Людмила Чернова
-    (4, 27, false, CURRENT_TIMESTAMP), -- Григорий Шевцов
+    (4, 23, true),  -- Андрей Соловьев - лидер
+    (4, 24, false), -- Ксения Тихонова
+    (4, 25, false), -- Евгений Фомичев
+    (4, 26, false), -- Людмила Чернова
+    (4, 27, false), -- Григорий Шевцов
 
     -- Команда "Цифровые пионеры" (из группы УВВ-411, студенты с id 29-33)
-    (5, 28, true, CURRENT_TIMESTAMP),  -- Валентин Щербаков - лидер
-    (5, 29, false, CURRENT_TIMESTAMP), -- Альбина Яковлева
-    (5, 30, false, CURRENT_TIMESTAMP), -- Виктор Баранов
-    (5, 31, false, CURRENT_TIMESTAMP), -- Евдокия Ермакова
-    (5, 32, false, CURRENT_TIMESTAMP), -- Станислав Гусев
+    (5, 28, true),  -- Валентин Щербаков - лидер
+    (5, 29, false), -- Альбина Яковлева
+    (5, 30, false), -- Виктор Баранов
+    (5, 31, false), -- Евдокия Ермакова
+    (5, 32, false), -- Станислав Гусев
 
     -- Команда "Алгоритм" (из группы УВВ-412, студенты с id 34-38)
-    (6, 33, true, CURRENT_TIMESTAMP),  -- Оксана Крылова - лидер
-    (6, 34, false, CURRENT_TIMESTAMP), -- Эдуард Маслов
-    (6, 35, false, CURRENT_TIMESTAMP), -- Зинаида Осипова
-    (6, 36, false, CURRENT_TIMESTAMP), -- Илья Поляков
-    (6, 37, false, CURRENT_TIMESTAMP); -- Тамара Рябова
+    (6, 33, true),  -- Оксана Крылова - лидер
+    (6, 34, false), -- Эдуард Маслов
+    (6, 35, false), -- Зинаида Осипова
+    (6, 36, false), -- Илья Поляков
+    (6, 37, false); -- Тамара Рябова
 
 -- Вставка проектов с правильными статусами
 -- 3 проекта AVAILABLE, 1 проект ON_VERIFICATION, 1 проект IN_PROGRESS
-INSERT INTO projects (user_id, status_id, title, target, barrier, existing_solution, project_type, department)
+INSERT INTO projects (user_id, project_status, title, target, barrier, existing_solution, project_type, department)
 VALUES
     -- Проект 1: AVAILABLE (статус 3) - утвержден и ждет команду
-    (39, 3, 'Разработка мобильного приложения для учета студентов',
+    (38, 'AVAILABLE', 'Разработка мобильного приложения для учета студентов',
      'Создать удобное мобильное приложение для отслеживания успеваемости и посещаемости студентов',
      'Недостаток опыта в мобильной разработке, ограниченные ресурсы для тестирования',
      'Существуют различные веб-системы, но нет удобного мобильного решения',
-     'Прикладной', 'IT'),
+     'Прикладной', 'ИиВТ'),
 
     -- Проект 2: AVAILABLE (статус 3) - утвержден и ждет команду
-    (40, 3, 'Автоматизация документооборота университета',
+    (39, 'AVAILABLE', 'Автоматизация документооборота университета',
      'Внедрить систему электронного документооборота для ускорения обработки заявлений и приказов',
      'Большой объем бумажных документов, сопротивление сотрудников изменениям',
      'Используются бумажные журналы и устаревшие системы учета',
-     'Инфраструктурный', 'Документооборот'),
+     'Инфраструктурный', 'ВССиИБ'),
 
     -- Проект 3: AVAILABLE (статус 3) - утвержден и ждет команду
-    (39, 3, 'Платформа для онлайн-курсов с элементами геймификации',
+    (38, 'AVAILABLE', 'Платформа для онлайн-курсов с элементами геймификации',
      'Создать интерактивную платформу для обучения студентов с системой достижений и рейтингов',
      'Сложность реализации геймификации, высокая нагрузка на сервер',
      'Существуют стандартные LMS системы без элемента игры',
-     'Стартап', 'Образование'),
+     'Стартап', 'ЦТУТП'),
 
     -- Проект 4: ON_VERIFICATION (статус 1) - ожидает проверки администратором
-    (40, 1, 'Система распознавания студенческих билетов',
+    (39, 'ON_VERIFICATION', 'Система распознавания студенческих билетов',
      'Разработать систему для автоматической проверки студенческих билетов с использованием компьютерного зрения',
      'Разнообразие форматов билетов, точность распознавания в плохих условиях',
      'Ручная проверка на проходной, что вызывает очереди',
-     'Инновационный', 'Безопасность'),
+     'Инновационный', 'ВССиИБ'),
 
     -- Проект 5: IN_PROGRESS (статус 5) - выполняется командой
-    (39, 5, 'Чат-бот для приемной комиссии',
+    (38, 'IN_PROGRESS', 'Чат-бот для приемной комиссии',
      'Разработать телеграм-бота для ответов на частые вопросы абитуриентов',
      'Обработка естественного языка, большое количество возможных вопросов',
      'Стандартные FAQ на сайте, которые не интерактивны',
-     'Прикладной', 'IT');
+     'Прикладной', 'ИиВТ');
 
 -- Вставка этапов проектов (история изменений статусов)
 -- Каждый этап отражает момент изменения статуса проекта
-INSERT INTO project_stages (project_id, team_id, status_id, start_time, end_time)
+INSERT INTO project_stages (project_id, team_id, stage_status, start_time, end_time)
 VALUES
     -- Проект 1 (AVAILABLE): Был создан -> прошел верификацию
-    (1, NULL, 1, '2024-01-10 10:00:00+00', '2024-01-11 14:30:00+00'),  -- ON_VERIFICATION (создан)
-    (1, NULL, 3, '2024-01-11 14:30:00+00', NULL),                       -- AVAILABLE (одобрен админом)
+    (1, NULL, 'ON_VERIFICATION', '2024-01-10 10:00:00+00', '2024-01-11 14:30:00+00'),  -- ON_VERIFICATION (создан)
+    (1, NULL, 'AVAILABLE', '2024-01-11 14:30:00+00', NULL),                       -- AVAILABLE (одобрен админом)
 
     -- Проект 2 (AVAILABLE): Был создан -> прошел верификацию
-    (2, NULL, 1, '2024-02-01 09:00:00+00', '2024-02-02 11:20:00+00'),  -- ON_VERIFICATION (создан)
-    (2, NULL, 3, '2024-02-02 11:20:00+00', NULL),                       -- AVAILABLE (одобрен админом)
+    (2, NULL, 'ON_VERIFICATION', '2024-02-01 09:00:00+00', '2024-02-02 11:20:00+00'),  -- ON_VERIFICATION (создан)
+    (2, NULL, 'AVAILABLE', '2024-02-02 11:20:00+00', NULL),                       -- AVAILABLE (одобрен админом)
 
     -- Проект 3 (AVAILABLE): Был создан -> прошел верификацию
-    (3, NULL, 1, '2024-02-15 13:00:00+00', '2024-02-16 09:45:00+00'),  -- ON_VERIFICATION (создан)
-    (3, NULL, 3, '2024-02-16 09:45:00+00', NULL),                       -- AVAILABLE (одобрен админом)
+    (3, NULL, 'ON_VERIFICATION', '2024-02-15 13:00:00+00', '2024-02-16 09:45:00+00'),  -- ON_VERIFICATION (создан)
+    (3, NULL, 'AVAILABLE', '2024-02-16 09:45:00+00', NULL),                       -- AVAILABLE (одобрен админом)
 
     -- Проект 4 (ON_VERIFICATION): Только создан, еще не проверен админом
-    (4, NULL, 1, '2024-03-01 10:00:00+00', NULL),                       -- ON_VERIFICATION (ждет проверки)
+    (4, NULL, 'ON_VERIFICATION', '2024-03-01 10:00:00+00', NULL),                       -- ON_VERIFICATION (ждет проверки)
 
     -- Проект 5 (IN_PROGRESS): Прошел полный цикл до выполнения командой
-    (5, NULL, 1, '2024-01-20 14:00:00+00', '2024-01-21 10:15:00+00'),  -- ON_VERIFICATION (создан)
-    (5, NULL, 3, '2024-01-21 10:15:00+00', '2024-01-25 09:00:00+00'),  -- AVAILABLE (одобрен админом)
-    (5, 1, 5, '2024-01-25 09:00:00+00', NULL);                         -- IN_PROGRESS (команда начала работу)
+    (5, NULL, 'ON_VERIFICATION', '2024-01-20 14:00:00+00', '2024-01-21 10:15:00+00'),  -- ON_VERIFICATION (создан)
+    (5, NULL, 'AVAILABLE', '2024-01-21 10:15:00+00', '2024-01-25 09:00:00+00'),  -- AVAILABLE (одобрен админом)
+    (5, 1, 'IN_PROGRESS', '2024-01-25 09:00:00+00', NULL);                         -- IN_PROGRESS (команда начала работу)
+
+-- =====================================================
+-- Дополнительные проекты (15 штук)
+-- =====================================================
+
+INSERT INTO projects (user_id, project_status, title, target, barrier, existing_solution, project_type, department)
+VALUES
+    -- =====================================================
+    -- AVAILABLE проекты (10 штук) - статус 3
+    -- =====================================================
+
+    -- Проект 6: AVAILABLE
+    (38, 'AVAILABLE', 'Система онлайн-тестирования знаний студентов',
+     'Разработать платформу для проведения онлайн-экзаменов с автоматической проверкой результатов и прокторингом',
+     'Обеспечение честности тестирования, защита от списывания, высокая нагрузка в сессию',
+     'Существуют отдельные решения, но нет интеграции с университетской системой',
+     'Прикладной', 'ИиВТ'),
+
+    -- Проект 7: AVAILABLE
+    (39, 'AVAILABLE', 'Мобильное приложение для просмотра расписания и оценок',
+     'Создать удобное мобильное приложение для студентов с push-уведомлениями об изменениях в расписании',
+     'Интеграция с существующей университетской системой, синхронизация данных в реальном времени',
+     'Студенты используют сайт, который не адаптирован для мобильных устройств',
+     'Прикладной', 'ИиВТ'),
+
+    -- Проект 8: AVAILABLE
+    (38, 'AVAILABLE', 'Система управления студенческими проектами и портфолио',
+     'Разработать платформу для хранения и демонстрации студенческих проектов, курсовых и дипломных работ',
+     'Организация удобного поиска и категоризации, защита авторских прав студентов',
+     'Проекты хранятся разрозненно на кафедрах, нет единой базы достижений',
+     'Инфраструктурный', 'ЦТУТП'),
+
+    -- Проект 9: AVAILABLE
+    (39, 'AVAILABLE', 'Чат-бот для абитуриентов с расписанием дней открытых дверей',
+     'Разработать бота для Telegram и ВКонтакте для информирования абитуриентов о поступлении и мероприятиях',
+     'Актуализация информации, обработка нестандартных вопросов, интеграция с CRM',
+     'Информация разрознена по разным каналам и сайтам, нет единой точки входа',
+     'Прикладной', 'ВССиИБ'),
+
+    -- Проект 10: AVAILABLE
+    (38, 'AVAILABLE', 'Аналитическая платформа для отслеживания успеваемости групп',
+     'Создать дашборд для преподавателей и кураторов с аналитикой успеваемости и посещаемости студентов',
+     'Визуализация больших объемов данных, построение прогнозов неуспеваемости',
+     'Данные разрознены в журналах и Excel, нет инструментов аналитики',
+     'Инновационный', 'ЦТУТП'),
+
+    -- Проект 11: AVAILABLE
+    (39, 'AVAILABLE', 'Система записи на консультации к преподавателям',
+     'Разработать веб-сервис для онлайн-записи студентов на консультации с выбором времени',
+     'Синхронизация с календарями преподавателей, предотвращение двойных записей',
+     'Студенты записываются через личное общение или по email, что неудобно',
+     'Прикладной', 'ИиВТ'),
+
+    -- Проект 12: AVAILABLE
+    (38, 'AVAILABLE', 'Платформа для проведения хакатонов и конкурсов',
+     'Создать платформу для организации внутренних IT-соревнований с автоматической проверкой заданий',
+     'Сложность проверки творческих заданий, необходимость в системе рейтингования',
+     'Хакатоны организуются через внешние сервисы или вручную',
+     'Стартап', 'ВССиИБ'),
+
+    -- Проект 13: AVAILABLE
+    (39, 'AVAILABLE', 'Мобильное приложение-карта университетского кампуса',
+     'Разработать навигационное приложение по корпусам университета с поиском аудиторий и кафедр',
+     'Создание точной 3D-карты, обновление информации при перемещении кафедр',
+     'Студенты и гости теряются в большом количестве корпусов, нет единой навигации',
+     'Прикладной', 'ИиВТ'),
+
+    -- Проект 14: AVAILABLE
+    (38, 'AVAILABLE', 'Система обратной связи для студентов с автоматической маршрутизацией',
+     'Разработать платформу для подачи обращений студентов с автоматическим распределением по ответственным',
+     'Обеспечение быстрой реакции, предотвращение потери обращений, прозрачность статусов',
+     'Обращения приходят на разные email и теряются или долго обрабатываются',
+     'Инфраструктурный', 'ЦТУТП'),
+
+    -- Проект 15: AVAILABLE
+    (39, 'AVAILABLE', 'Генератор индивидуальных учебных планов на основе ИИ',
+     'Создать систему, которая автоматически формирует оптимальный учебный план по выбранной траектории',
+     'Сложность алгоритмов оптимизации, учет всех ограничений и пререквизитов',
+     'Учебные планы составляются вручную, что занимает много времени и приводит к ошибкам',
+     'Инновационный', 'ЦТУТП'),
+
+    -- =====================================================
+    -- IN_PROGRESS проекты (2 штуки) - статус 5
+    -- =====================================================
+
+    -- Проект 16: IN_PROGRESS
+    (40, 'IN_PROGRESS', 'Веб-портал для публикации научных работ студентов',
+     'Создать платформу для публикации и рецензирования студенческих научных статей с DOI',
+     'Обеспечение рецензирования, защита от плагиата, привлечение рецензентов из числа преподавателей',
+     'Студенческие работы публикуются в сборниках с длительной задержкой или не публикуются вовсе',
+     'Прикладной', 'ВССиИБ'),
+
+    -- Проект 17: IN_PROGRESS
+    (40, 'IN_PROGRESS', 'Система автоматического распознавания почерка в бланках',
+     'Разработать систему для автоматической проверки бланков ответов с распознаванием рукописного текста',
+     'Низкая точность распознавания неразборчивого почерка, обработка разных типов бланков',
+     'Проверка проводится вручную преподавателями, что отнимает много времени',
+     'Инновационный', 'ВССиИБ'),
+
+    -- =====================================================
+    -- ON_VERIFICATION проекты (3 штуки) - статус 1
+    -- =====================================================
+
+    -- Проект 18: ON_VERIFICATION
+    (38, 'ON_VERIFICATION', 'VR-тренажер для подготовки студентов железнодорожных специальностей',
+     'Создать виртуальный тренажер для отработки навыков работы с железнодорожным оборудованием',
+     'Высокая стоимость разработки VR-контента, необходимость специального оборудования',
+     'Практические занятия проводятся на реальном оборудовании, которое дорого и труднодоступно',
+     'Инновационный', 'ЦТУТП'),
+
+    -- Проект 19: ON_VERIFICATION
+    (39, 'ON_VERIFICATION', 'Корпоративный мессенджер для преподавателей',
+     'Разработать защищенный мессенджер для внутренней коммуникации сотрудников университета',
+     'Обеспечение безопасности и шифрования, интеграция с университетскими сервисами',
+     'Преподаватели используют внешние мессенджеры, что небезопасно для рабочих данных',
+     'Инфраструктурный', 'ВССиИБ'),
+
+    -- Проект 20: ON_VERIFICATION
+    (38, 'ON_VERIFICATION', 'Система прогнозирования отчисления студентов на основе успеваемости',
+     'Создать ML-модель для выявления студентов группы риска и своевременного реагирования',
+     'Необходимость в больших объемах исторических данных, этические вопросы использования',
+     'Отчисленные студенты выявляются постфактум, нет превентивных мер',
+     'Инновационный', 'ЦТУТП');
+
+-- =====================================================
+-- Этапы проектов (project_stages)
+-- =====================================================
+
+INSERT INTO project_stages (project_id, team_id, stage_status, start_time, end_time)
+VALUES
+    -- =====================================================
+    -- Этапы для AVAILABLE проектов (прошли верификацию)
+    -- =====================================================
+
+    -- Проект 6 (AVAILABLE)
+    (6, NULL, 'ON_VERIFICATION', '2024-04-10 11:00:00+00', '2024-04-11 15:30:00+00'),
+    (6, NULL, 'AVAILABLE', '2024-04-11 15:30:00+00', NULL),
+
+    -- Проект 7 (AVAILABLE)
+    (7, NULL, 'ON_VERIFICATION', '2024-04-15 09:30:00+00', '2024-04-16 12:00:00+00'),
+    (7, NULL, 'AVAILABLE', '2024-04-16 12:00:00+00', NULL),
+
+    -- Проект 8 (AVAILABLE)
+    (8, NULL, 'ON_VERIFICATION', '2024-04-20 14:00:00+00', '2024-04-21 10:45:00+00'),
+    (8, NULL, 'AVAILABLE', '2024-04-21 10:45:00+00', NULL),
+
+    -- Проект 9 (AVAILABLE)
+    (9, NULL, 'ON_VERIFICATION', '2024-04-25 13:15:00+00', '2024-04-26 16:20:00+00'),
+    (9, NULL, 'AVAILABLE', '2024-04-26 16:20:00+00', NULL),
+
+    -- Проект 10 (AVAILABLE)
+    (10, NULL, 'ON_VERIFICATION', '2024-05-01 10:00:00+00', '2024-05-02 09:30:00+00'),
+    (10, NULL, 'AVAILABLE', '2024-05-02 09:30:00+00', NULL),
+
+    -- Проект 11 (AVAILABLE)
+    (11, NULL, 'ON_VERIFICATION', '2024-05-05 12:00:00+00', '2024-05-06 14:15:00+00'),
+    (11, NULL, 'AVAILABLE', '2024-05-06 14:15:00+00', NULL),
+
+    -- Проект 12 (AVAILABLE)
+    (12, NULL, 'ON_VERIFICATION', '2024-05-10 15:30:00+00', '2024-05-11 11:00:00+00'),
+    (12, NULL, 'AVAILABLE', '2024-05-11 11:00:00+00', NULL),
+
+    -- Проект 13 (AVAILABLE)
+    (13, NULL, 'ON_VERIFICATION', '2024-05-15 09:00:00+00', '2024-05-16 13:45:00+00'),
+    (13, NULL, 'AVAILABLE', '2024-05-16 13:45:00+00', NULL),
+
+    -- Проект 14 (AVAILABLE)
+    (14, NULL, 'ON_VERIFICATION', '2024-05-20 11:30:00+00', '2024-05-21 10:00:00+00'),
+    (14, NULL, 'ON_VERIFICATION', '2024-05-21 10:00:00+00', NULL),
+
+    -- Проект 15 (AVAILABLE)
+    (15, NULL, 'ON_VERIFICATION', '2024-05-25 14:30:00+00', '2024-05-26 12:15:00+00'),
+    (15, NULL, 'AVAILABLE', '2024-05-26 12:15:00+00', NULL),
+
+    -- =====================================================
+    -- Этапы для IN_PROGRESS проектов
+    -- =====================================================
+
+    -- Проект 16 (IN_PROGRESS) - выполняется командой 3
+    (16, NULL, 'ON_VERIFICATION', '2024-04-01 10:00:00+00', '2024-04-02 14:30:00+00'),
+    (16, NULL, 'AVAILABLE', '2024-04-02 14:30:00+00', '2024-04-10 09:00:00+00'),
+    (16, 3, 'IN_PROGRESS', '2024-04-10 09:00:00+00', NULL),
+
+    -- Проект 17 (IN_PROGRESS) - выполняется командой 4
+    (17, NULL, 'ON_VERIFICATION', '2024-04-05 13:00:00+00', '2024-04-06 11:20:00+00'),
+    (17, NULL, 'AVAILABLE', '2024-04-06 11:20:00+00', '2024-04-15 10:00:00+00'),
+    (17, 4, 'IN_PROGRESS', '2024-04-15 10:00:00+00', NULL),
+
+    -- =====================================================
+    -- Этапы для ON_VERIFICATION проектов (только созданы)
+    -- =====================================================
+
+    -- Проект 18 (ON_VERIFICATION)
+    (18, NULL, 'ON_VERIFICATION', '2024-06-01 09:00:00+00', NULL),
+
+    -- Проект 19 (ON_VERIFICATION)
+    (19, NULL, 'ON_VERIFICATION', '2024-06-03 11:00:00+00', NULL),
+
+    -- Проект 20 (ON_VERIFICATION)
+    (20, NULL, 'ON_VERIFICATION', '2024-06-05 14:30:00+00', NULL);
