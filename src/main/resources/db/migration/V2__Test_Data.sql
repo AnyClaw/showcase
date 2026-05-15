@@ -176,21 +176,21 @@ VALUES
 INSERT INTO project_stages (project_id, team_id, stage_status, start_time, end_time)
 VALUES
     -- Проект 1 (AVAILABLE): Был создан -> прошел верификацию
-    (1, NULL, 'ON_VERIFICATION', '2024-01-10 10:00:00+00', '2024-01-11 14:30:00+00'),  -- ON_VERIFICATION (создан)
-    (1, NULL, 'AVAILABLE', '2024-01-11 14:30:00+00', NULL),                       -- AVAILABLE (одобрен админом)
+    (1,NULL , 'ON_VERIFICATION', '2024-01-10 10:00:00+00', '2024-01-11 14:30:00+00'),  -- ON_VERIFICATION (создан)
+    (1, NULL , 'AVAILABLE', '2024-01-11 14:30:00+00', NULL),                       -- AVAILABLE (одобрен админом)
 
     -- Проект 2 (AVAILABLE): Был создан -> прошел верификацию
-    (2, NULL, 'ON_VERIFICATION', '2024-02-01 09:00:00+00', '2024-02-02 11:20:00+00'),  -- ON_VERIFICATION (создан)
-    (2, NULL, 'AVAILABLE', '2024-02-02 11:20:00+00', NULL),                       -- AVAILABLE (одобрен админом)
+    (2, NULL , 'ON_VERIFICATION', '2024-02-01 09:00:00+00', '2024-02-02 11:20:00+00'),  -- ON_VERIFICATION (создан)
+    (2, NULL , 'AVAILABLE', '2024-02-02 11:20:00+00', NULL),                       -- AVAILABLE (одобрен админом)
 
     -- Проект 3 (AVAILABLE): Был создан -> прошел верификацию
-    (3, NULL, 'ON_VERIFICATION', '2024-02-15 13:00:00+00', '2024-02-16 09:45:00+00'),  -- ON_VERIFICATION (создан)
-    (3, NULL, 'AVAILABLE', '2024-02-16 09:45:00+00', NULL),                       -- AVAILABLE (одобрен админом)
+    (3, NULL , 'ON_VERIFICATION', '2024-02-15 13:00:00+00', '2024-02-16 09:45:00+00'),  -- ON_VERIFICATION (создан)
+    (3, NULL , 'AVAILABLE', '2024-02-16 09:45:00+00', NULL),                       -- AVAILABLE (одобрен админом)
 
     -- Проект 4 (ON_VERIFICATION): Только создан, еще не проверен админом
     (4, NULL, 'ON_VERIFICATION', '2024-03-01 10:00:00+00', NULL),                       -- ON_VERIFICATION (ждет проверки)
 
     -- Проект 5 (IN_PROGRESS): Прошел полный цикл до выполнения командой
-    (5, NULL, 'ON_VERIFICATION', '2024-01-20 14:00:00+00', '2024-01-21 10:15:00+00'),  -- ON_VERIFICATION (создан)
-    (5, NULL, 'AVAILABLE', '2024-01-21 10:15:00+00', '2024-01-25 09:00:00+00'),  -- AVAILABLE (одобрен админом)
+    (5, NULL , 'ON_VERIFICATION', '2024-01-20 14:00:00+00', '2024-01-21 10:15:00+00'),  -- ON_VERIFICATION (создан)
+    (5, NULL , 'AVAILABLE', '2024-01-21 10:15:00+00', '2024-01-25 09:00:00+00'),  -- AVAILABLE (одобрен админом)
     (5, 1, 'IN_PROGRESS', '2024-01-25 09:00:00+00', NULL);                         -- IN_PROGRESS (команда начала работу)

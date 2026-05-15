@@ -7,6 +7,7 @@ import com.example.showcase.mapper.UserMapper;
 import com.example.showcase.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.StreamSupport;
 
@@ -29,6 +30,23 @@ public class UserService {
         return userMapper.toDto(userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id))
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponseDTO findUserByEmail(String email) {
+        User user = userRepository. findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email));
+
+        // возвращаем только нужные поля, остальные — null
+        return new UserResponseDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getMiddleName(),
+                null,               // phoneNumber не возвращаем
+                user.getEmail(),
+                null                            // role не возвращаем
         );
     }
 }

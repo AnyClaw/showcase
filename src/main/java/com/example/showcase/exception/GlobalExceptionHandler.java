@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+
 import java.util.Arrays;
+
 
 @Hidden
 @RestControllerAdvice
@@ -97,6 +99,16 @@ public class GlobalExceptionHandler {
                 .of(HttpStatus.BAD_REQUEST, request)
                 .message(String.format("Parameter '%s' has an incorrect value '%s'", e.getName(), e.getValue()))
                 .code("INVALID_PARAMETER_VALUE")
+                .build()
+        );
+    }
+
+    @ExceptionHandler(TeamNotFoundException.class)
+    public ResponseEntity<ErrorResponse>  handle(TeamNotFoundException e, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse
+                .of(HttpStatus.NOT_FOUND, request)
+                .message(e.getMessage())
+                .code("TEAM_NOT_FOUND")
                 .build()
         );
     }

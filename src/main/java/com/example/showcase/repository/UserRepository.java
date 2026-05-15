@@ -12,4 +12,7 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository<User, Integer> {
     boolean existsByEmail(String email);
     Optional<User> findByEmail(String email);
+
+    @Query("SELECT u FROM User u WHERE LOWER(u.email) = LOWER(:email)")
+    Optional<User> findByEmailIgnoreCase(@Param("email") String email);
 }

@@ -4,13 +4,12 @@ import com.example.showcase.dto.response.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("/api/user")
 //@PreAuthorize("hasAuthority('ADMIN')")
 public interface UserController {
 
@@ -40,4 +39,9 @@ public interface UserController {
     UserResponseDTO findUserById(
             @PathVariable("id") int id
     );
+
+    @GetMapping("/search")
+    @PreAuthorize("isAuthenticated()")
+    ResponseEntity<UserResponseDTO> findUserByEmail(@RequestParam("email") String email);
+
 }
