@@ -74,8 +74,6 @@ public class TeamService {
                     throw new LeaderException("Вы являетесь лидером. Перед уходом назначьте нового лидера.");}
                 if (userId == newLeaderId) {
                     throw new LeaderException("Нельзя передать лидерство самому себе.");}
-                if (!(teamRepository.countMemberInTeam(teamId, newLeaderId)>0)) {
-                    throw new LeaderException("Новый лидер должен быть действующим участником команды.");}
 
                 teamRepository.clearActiveLeader(teamId);
                 teamRepository.setLeaderForTeam(teamId, newLeaderId);

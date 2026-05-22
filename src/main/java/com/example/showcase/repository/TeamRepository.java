@@ -13,66 +13,41 @@ import java.util.Optional;
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
     Optional<Team> findByMembersId(Integer userId);
-    // тоже самое почти но с косвенной проверкой существования в принципе пары
-    @Query(value = "SELECT COUNT(*) FROM team_members WHERE team_id = :teamId AND user_id = :userId AND left_at IS NOT NULL", nativeQuery = true)
-    long countMemberInTeam(@Param("teamId") int teamId, @Param("userId") int userId);
-    // без дубликатов мини джойн без полной связки
-    // проверка является ли пользователь лидером
-    @Query(value = "SELECT EXISTS(SELECT 1 FROM team_members WHERE team_id = :teamId AND user_id = :userId AND is_leader = true)", nativeQuery = true)
-    boolean isUserLeader(@Param("teamId") int teamId, @Param("userId") int userId);
-    // проверяет состоит ли пользователь ВООБЩЕ в какой-либо команде
-    @Query(value = "SELECT EXISTS(SELECT 1 FROM team_members WHERE user_id = :userId)", nativeQuery = true)
-    boolean isUserInAnyTeam(@Param("userId") int userId);
 
-    // добавить участника
-    @Modifying
-    @Query(value = "INSERT INTO team_members (team_id, user_id) VALUES (:teamId, :userId)", nativeQuery = true)
-    void addMemberToTeam(@Param("teamId") int teamId, @Param("userId") int userId);
-
-
-
-
+//кол-во участников команды
     @Query(value = """
         SELECT COUNT(*) FROM team_members 
         WHERE team_id = :teamId AND left_at IS NULL
         """, nativeQuery = true)
     int countActiveMembersByTeamId(@Param("teamId") Integer teamId);
-
+//является ли юзер лидером конкретной команды
     @Query(value = """
         SELECT is_leader FROM team_members 
         WHERE team_id = :teamId AND user_id = :userId AND left_at IS NULL
         """, nativeQuery = true)
     Optional<Boolean> isUserActiveLeader(@Param("teamId") Integer teamId, @Param("userId") Integer userId);
-
+//очистка лидеров команды во избежание конфликта
     @Query(value = """
         UPDATE team_members SET is_leader = false 
         WHERE team_id = :teamId AND is_leader = true AND left_at IS NULL
         """, nativeQuery = true)
     @Modifying
     void clearActiveLeader(@Param("teamId") Integer teamId);
-
+//переназначение лидера
     @Query(value = """
         UPDATE team_members SET is_leader = true 
         WHERE team_id = :teamId AND user_id = :newLeaderId AND left_at IS NULL
         """, nativeQuery = true)
     @Modifying
     void setLeaderForTeam(@Param("teamId") Integer teamId, @Param("newLeaderId") Integer newLeaderId);
-
+//удаление
     @Query(value = """
         UPDATE team_members SET left_at = CURRENT_TIMESTAMP 
         WHERE team_id = :teamId AND user_id = :userId AND left_at IS NULL
         """, nativeQuery = true)
     @Modifying
     void markMemberAsLeft(@Param("teamId") Integer teamId, @Param("userId") Integer userId);
-
-    @Query(value = """
-        SELECT EXISTS(
-            SELECT 1 FROM team_members 
-            WHERE team_id = :teamId AND user_id = :userId AND left_at IS NULL
-        )
-        """, nativeQuery = true)
-    boolean isUserActiveMember(@Param("teamId") Integer teamId, @Param("userId") Integer userId);
-
+    //вывод полной инфы по команде по айди команды
     @Query(value = """
         SELECT 
             t.team_id AS teamId, t.team_name AS teamName,
@@ -85,7 +60,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
         ORDER BY tm.is_leader DESC, tm.joined_at ASC
         """, nativeQuery = true)
     List<TeamQueryResult> findActiveMembersByTeamId(@Param("teamId") Integer teamId);
-
+//поиск команды по рандом айди
     @Query(value = """
     SELECT team_id 
     FROM team_members 
@@ -93,7 +68,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     LIMIT 1
     """, nativeQuery = true)
     Optional<Integer> findCurrentTeamIdByUserId(@Param("userId") Integer userId);
-
+//проверка на не_лидера в конкретной команде
     @Query(value = """
         SELECT EXISTS(
             SELECT 1 FROM team_members 
@@ -102,7 +77,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
         )
         """, nativeQuery = true)
     boolean isUserActiveRegularMember(@Param("teamId") Integer teamId, @Param("targetId") Integer targetId);
-
+//добавление
     @Modifying
     @Query(value = """
         INSERT INTO team_members (team_id, user_id, is_leader, joined_at, left_at)
@@ -112,17 +87,10 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
         WHERE team_members.left_at IS NOT NULL
         """, nativeQuery = true)
     void addActiveMember(@Param("teamId") Integer teamId, @Param("userId") Integer userId);
-
-    @Query(value = """
-        SELECT team_id FROM team_members 
-        WHERE user_id = :userId AND is_leader = true AND left_at IS NULL
-        LIMIT 1
-        """, nativeQuery = true)
-    Optional<Integer> findActiveTeamIdByLeaderId(@Param("userId") Integer userId);
-
-    @Query(value = "SELECT name FROM teams WHERE id = :teamId", nativeQuery = true)
+//быстрое получение названия команды
+    @Query(value = "SELECT team_name FROM teams WHERE team_id = :teamId", nativeQuery = true)
     Optional<String> findTeamNameById(@Param("teamId") Integer teamId);
-
+    //проверка на существование
     @Query(value = "SELECT EXISTS(SELECT 1 FROM users WHERE user_id = :userId)", nativeQuery = true)
     boolean userExists(@Param("userId") Integer userId);
 
