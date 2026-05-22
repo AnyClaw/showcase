@@ -31,6 +31,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(e.toString());
     }
 
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handle(IllegalArgumentException e, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse
+                .of(HttpStatus.BAD_REQUEST, request)
+                .message("Incorrect params in request: " + e.getMessage())
+                .code("ILLEGAL_ARGUMENT_ERROR")
+                .build()
+        );
+    }
+
     // Когда @Valid DTO не проходит валидацию
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException e, WebRequest request) {
@@ -111,5 +122,31 @@ public class GlobalExceptionHandler {
                 .code("TEAM_NOT_FOUND")
                 .build()
         );
+    }
+
+    @ExceptionHandler(LeaderException.class)
+    public ResponseEntity<ErrorResponse> handle(LeaderException e, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse
+                .of(HttpStatus.BAD_REQUEST, request)
+                .message(e.getMessage())
+                .code("INVALID_PARAMETER_FOR_LEADER")
+                .build());
+    }
+    @ExceptionHandler(ExcludeException.class)
+    public ResponseEntity<ErrorResponse> handle(ExcludeException e, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse
+                .of(HttpStatus.BAD_REQUEST, request)
+                .message(e.getMessage())
+                .code("INVALID_PARAMETER_FOR_EXCLUDE")
+                .build());
+    }
+
+    @ExceptionHandler(InviteException.class)
+    public ResponseEntity<ErrorResponse> handle(InviteException e, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse
+                .of(HttpStatus.BAD_REQUEST, request)
+                .message(e.getMessage())
+                .code("INVALID_PARAMETER_FOR_INVITE")
+                .build());
     }
 }

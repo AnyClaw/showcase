@@ -34,6 +34,8 @@ CREATE TABLE team_members (
                               team_id int not NULL ,
                               user_id int not null,
                               is_leader boolean default false,
+                              joined_at timestamptz DEFAULT CURRENT_TIMESTAMP,
+                              left_at timestamptz NULL,
 
                               PRIMARY KEY (team_id, user_id),
                               CONSTRAINT fk_team_members_user_id FOREIGN KEY (user_id) REFERENCES users(user_id ) on delete cascade,

@@ -3,6 +3,7 @@ package com.example.showcase.controller;
 import com.example.showcase.dto.response.ErrorResponse;
 import com.example.showcase.dto.response.TeamDTO;
 import com.example.showcase.entity.User;
+import com.example.showcase.exception.UserNotFoundException;
 import com.example.showcase.service.TeamService;
 import com.example.showcase.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,82 +25,55 @@ public class TeamController {
 
     @GetMapping("/my")
     @PreAuthorize("hasAuthority('STUDENT')")
-    public ResponseEntity<TeamDTO> getMyTeam(
+    public TeamDTO getMyTeam(
             @AuthenticationPrincipal User currentUser) {
-
         int userId = currentUser.getId();
-
-        TeamDTO team = teamService.getMyTeam(userId);
-
-        return ResponseEntity.ok(team);
+        return teamService.getMyTeam(userId);
     }
 
     @PatchMapping("/leave")
     @PreAuthorize("hasAuthority('STUDENT')")
-    public ResponseEntity<ErrorResponse> leaveTeam(
+    public void leaveTeam(
             @AuthenticationPrincipal User currentUser,
-            @RequestParam(required = false)  Integer  newLeaderId,
-            WebRequest request) {
-
+            @RequestParam(required = false) Integer newLeaderId) {
+        if (currentUser == null || currentUser.getId() == null)
+            throw new UserNotFoundException("User not authenticated");
         teamService.leaveTeam(currentUser.getId(), newLeaderId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(ErrorResponse
-                .of(HttpStatus.OK, request)
-                .message("Вы успешно покинули команду")
-                .code("TEAM_LEFT")
-                .build()
-        );
     }
+
 
     @PatchMapping("/exclude/{userId}")
     @PreAuthorize("hasAuthority('STUDENT')")
-    public ResponseEntity<ErrorResponse> excludeUser(
+    public void excludeUser(
             @AuthenticationPrincipal User currentUser,
-            @PathVariable int userId,
-            WebRequest request) {
+            @PathVariable int userId) {
 
-        teamService.excludeUser(currentUser.getId(), userId);
+        if (currentUser == null || currentUser.getId() == null)
+            throw new UserNotFoundException("User not authenticated");
 
-        return ResponseEntity.status(HttpStatus.OK).body(ErrorResponse
-                .of(HttpStatus.OK, request)
-                .message("Пользователь успешно исключен из команды")
-                .code("USER_EXCLUDED")
-                .build()
-        );
+        teamService.excludeUser(currentUser.getId(),userId);
     }
 
     @PatchMapping("/leader/{userId}")
     @PreAuthorize("hasAuthority('STUDENT')")
-    public ResponseEntity<ErrorResponse> changeTeamLeader(
+    public void changeTeamLeader(
             @AuthenticationPrincipal User currentUser,
             @PathVariable int userId,
             WebRequest request) {
-
+        if (currentUser == null || currentUser.getId() == null)
+            throw new UserNotFoundException("User not authenticated");
         teamService.changeTeamLeader(currentUser.getId(), userId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(ErrorResponse
-                .of(HttpStatus.OK, request)
-                .message("Лидер команды успешно изменён")
-                .code("LEADER_CHANGED")
-                .build()
-        );
     }
 
     @PostMapping("/invite/{userId}")
     @PreAuthorize("hasAuthority('STUDENT')")
-    public ResponseEntity<ErrorResponse> inviteUserToTeam(
+    public void inviteUserToTeam(
             @AuthenticationPrincipal User currentUser,
             @PathVariable int userId,
             WebRequest request) {
-
+        if (currentUser == null || currentUser.getId() == null)
+            throw new UserNotFoundException("User not authenticated");
         teamService.inviteUserToTeam(currentUser.getId(), userId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(ErrorResponse
-                .of(HttpStatus.OK, request)
-                .message("Пользователь успешно приглашён в команду")
-                .code("USER_INVITED")
-                .build()
-        );
     }
 
 }

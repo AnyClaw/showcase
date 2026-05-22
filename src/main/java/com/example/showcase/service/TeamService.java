@@ -2,9 +2,9 @@ package com.example.showcase.service;
 
 import com.example.showcase.dto.response.TeamDTO;
 import com.example.showcase.dto.response.TeamMemberDTO;
+import com.example.showcase.dto.response.TeamQueryResult;
 import com.example.showcase.entity.Team;
-import com.example.showcase.exception.TeamNotFoundException;
-import com.example.showcase.exception.UserNotFoundException;
+import com.example.showcase.exception.*;
 import com.example.showcase.mapper.TeamMapper;
 import com.example.showcase.repository.TeamRepository;
 import com.example.showcase.repository.UserRepository;
@@ -25,133 +25,162 @@ public class TeamService {
 
     @Transactional(readOnly = true)
     public TeamDTO getMyTeam(Integer userId) {
-        List<Object[]> rows = teamRepository.getFullTeamData(userId);
+            if (userId == null) {
+                throw new UserNotFoundException("User not authenticated");
+            }
+            Integer teamId =  teamRepository.findCurrentTeamIdByUserId(userId)
+                .orElseThrow(() -> new TeamNotFoundException(userId));
 
-        if (rows.isEmpty()) {
-            throw new TeamNotFoundException(userId);
-        }
-        Integer teamId = (Integer) rows.get(0)[0];
-        String teamName = (String) rows.get(0)[1];
+            List<TeamQueryResult> results = teamRepository.findActiveMembersByTeamId(teamId);
+            if (results.isEmpty()) {
+                throw new TeamNotFoundException("Команда c ID " + teamId + " пуста или не найдена");
+            }
 
-        List<TeamMemberDTO> members = new ArrayList<>(rows.size());
-        for (Object[] row : rows) {
-            members.add(new TeamMemberDTO(
-                    (Integer) row[2],   // user_id
-                    (String) row[3],    // first_name
-                    (String) row[4],    // last_name
-                    (String) row[5],    // email
-                    (Boolean) row[6]    // is_leader
-            ));
-        }
+            var first = results.get(0);
+            List<TeamMemberDTO> members = results.stream()
+                    .map(r -> new TeamMemberDTO(
+                            r.userId(),
+                            r.firstName(),
+                            r.lastName(),
+                            r.email(),
+                            r.isLeader(),
+                            r.joinedAt(),
+                            r.leftAt()
+                    ))
+                    .toList();
 
-        return new TeamDTO(teamId, teamName, members);
+            return new TeamDTO(first.teamId(), first.teamName(), members);
     }
 
     @Transactional
-    public void leaveTeam(int userId, Integer newLeaderId) {
-
-        Team team = teamRepository.findWithMembersByUserId(userId)
+    public void leaveTeam(Integer userId, Integer newLeaderId) {
+        if (userId == null) throw new IllegalArgumentException("ID не может быть нулевым");
+        Integer teamId = teamRepository.findCurrentTeamIdByUserId(userId)
                 .orElseThrow(() -> new TeamNotFoundException("Вы не состоите ни в одной команде"));
+        Integer teamIdFromNew = teamRepository.findCurrentTeamIdByUserId(userId)
+                .orElseThrow(() -> new TeamNotFoundException("Новый лидер не состоите ни в одной команде"));
 
-        int memberCount = teamRepository.countMembersByTeamId(team.getId());
-        boolean isCurrentUserLeader = teamRepository.isUserLeader(team.getId(), userId);
+        if (teamId!=teamIdFromNew){
+            throw new LeaderException("Выбранный пользователь не состоит в вашей команде");}
 
-        if (isCurrentUserLeader) {
-            if (memberCount == 1) {
-                log.info("Лидер покидает команду, так как остался единственным участником");
+        int activeCount = teamRepository.countActiveMembersByTeamId(teamId);
+        boolean isLeader = teamRepository.isUserActiveLeader(teamId, userId).orElse(false);
+
+        if (isLeader) {
+            if (activeCount == 1) {
+                log.info("Лидер под ID "+ userId +" покидает команду, так как остался единственным участником");
             } else {
                 if (newLeaderId == null) {
-                    throw new IllegalArgumentException("Вы являетесь лидером. Перед уходом назначьте нового лидера.");
-                }
+                    throw new LeaderException("Вы являетесь лидером. Перед уходом назначьте нового лидера.");}
                 if (userId == newLeaderId) {
-                    throw new IllegalArgumentException("Нельзя передать лидерство самому себе.");
-                }
+                    throw new LeaderException("Нельзя передать лидерство самому себе.");}
+                if (!(teamRepository.countMemberInTeam(teamId, newLeaderId)>0)) {
+                    throw new LeaderException("Новый лидер должен быть действующим участником команды.");}
 
-                if (!(teamRepository.countMemberInTeam(team.getId(), newLeaderId)>0)) {
-                    throw new IllegalArgumentException("Новый лидер должен быть действующим участником команды.");
-                }
-
-                teamRepository.clearLeaderForTeam(team.getId());
-                teamRepository.setLeaderForTeam(team.getId(), newLeaderId);
-                log.info("Лидерство передано пользователю id={}", newLeaderId);
+                teamRepository.clearActiveLeader(teamId);
+                teamRepository.setLeaderForTeam(teamId, newLeaderId);
+                log.info("Лидерство в команде {} передано пользователю {} лидером {}", teamId, newLeaderId, userId);
             }
         } else {
             if (newLeaderId != null) {
-                log.warn("Пользователь не является лидером");
+                throw new LeaderException("Только лидер команды может назначать нового лидера.");
             }
         }
 
-        teamRepository.removeMemberFromTeam(team.getId(), userId);
-        log.info("Пользователь id={} покинул команду id={}", userId, team.getId());
+        teamRepository.markMemberAsLeft(teamId, userId);
+        log.info("Пользователь под ID {} покинул команду c ID {}", userId, teamId);
     }
 
     @Transactional
-    public void excludeUser(Integer leaderId, int targetUserId) {
-
-        Team team = teamRepository.findByMembersId(leaderId)
-                .orElseThrow(() -> new TeamNotFoundException("Команда не найдена"));
-
-        if (!teamRepository.isUserLeader(team.getId(),leaderId)){
-            throw new IllegalArgumentException("Вы не являетесь лидером команды.");
-        }
-        if (leaderId == targetUserId) {
-            throw new IllegalArgumentException("Лидер не может исключить сам себя.");
+    public void excludeUser(Integer leaderId, Integer targetUserId) {
+        if (leaderId == null || targetUserId == null) {
+            throw new IllegalArgumentException("ID пользователя не может быть null");
         }
 
-        if (teamRepository.countMemberInTeam(team.getId(), targetUserId) == 0) {
-            throw new IllegalArgumentException("Указанный пользователь не состоит в вашей команде.");
+        Integer teamId = teamRepository.findCurrentTeamIdByUserId(leaderId)
+                .orElseThrow(() -> new TeamNotFoundException("Вы не состоите ни в одной команде"));
+        Integer teamIdFromNew = teamRepository.findCurrentTeamIdByUserId(targetUserId)
+                .orElseThrow(() -> new TeamNotFoundException("Новый лидер не состоите ни в одной команде"));
+
+        if (!teamId.equals(teamIdFromNew)){
+            throw new ExcludeException("Выбранный пользователь не состоит в вашей команде");}
+
+        boolean isLeader = teamRepository.isUserActiveLeader(teamId, leaderId).orElse(false);
+        if (!isLeader){
+            throw new LeaderException("Только лидер команды может назначать нового лидера.");
         }
 
-        teamRepository.removeMemberFromTeam(team.getId(), targetUserId);
-        log.info("Лидер id={} исключил пользователя id={} из команды id={}", leaderId, targetUserId, team.getId());
+        if (leaderId.equals(targetUserId)) {
+            throw new LeaderException("Лидер не может исключить сам себя.");
+        }
+
+        if (!teamRepository.isUserActiveRegularMember(teamId, targetUserId)) {
+            throw new TeamNotFoundException("Указанный пользователь не состоит в вашей команде или уже покинул её.");
+        }
+
+        teamRepository.markMemberAsLeft(teamId, targetUserId);
+        log.info("Лидер ID={} исключил пользователя ID={} из команды ID={}", leaderId, targetUserId, teamId);
     }
 
     @Transactional
-    public void changeTeamLeader(int currentLeaderId, int newLeaderId) {
-        Team team = teamRepository.findByMembersId(currentLeaderId)
-                .orElseThrow(() -> new TeamNotFoundException("Команда не найдена"));
-
-        if (!teamRepository.isUserLeader(team.getId(),currentLeaderId)){
-            throw new IllegalArgumentException("Вы не являетесь лидером команды.");
-        }
-        if (currentLeaderId== newLeaderId) {
-            throw new IllegalArgumentException("Нельзя назначить лидером самого себя.");
+    public void changeTeamLeader(Integer currentLeaderId, Integer newLeaderId) {
+        if (currentLeaderId == null || newLeaderId == null) {
+            throw new IllegalArgumentException("ID пользователя не может быть null");
         }
 
-        if (teamRepository.countMemberInTeam(team.getId(), newLeaderId) == 0) {
-            throw new IllegalArgumentException("Новый лидер должен быть участником вашей команды.");
+        Integer teamId = teamRepository.findCurrentTeamIdByUserId(currentLeaderId)
+                .orElseThrow(() -> new TeamNotFoundException("Вы не состоите ни в одной команде"));
+        Integer teamIdFromNew = teamRepository.findCurrentTeamIdByUserId(newLeaderId)
+                .orElseThrow(() -> new TeamNotFoundException("Новый лидер не состоите ни в одной команде"));
+
+        if (!teamId.equals(teamIdFromNew)){
+            throw new ExcludeException("Выбранный пользователь не состоит в вашей команде");}
+
+        boolean isLeader = teamRepository.isUserActiveLeader(teamId, currentLeaderId).orElse(false);
+        if (!isLeader){
+            throw new LeaderException("Только лидер команды может назначать нового лидера.");
         }
 
-        teamRepository.clearLeaderForTeam(team.getId());
-        teamRepository.setLeaderForTeam(team.getId(), newLeaderId);
+        if (newLeaderId.equals(currentLeaderId)) {
+            throw new LeaderException("Вы уже лидер.");
+        }
+
+        teamRepository.clearActiveLeader(teamId);
+        teamRepository.setLeaderForTeam(teamId, newLeaderId);
         log.info("Лидерство передано пользователю id={}", newLeaderId);
 
-        log.info("Лидер команды id={} изменён: {} → {}", team.getId(), currentLeaderId, newLeaderId);
+        log.info("Лидерство в команде ID={} передано: {} → {}", teamId, currentLeaderId, newLeaderId);
     }
     // DEMO
     @Transactional
-    public void inviteUserToTeam(int leaderId, int targetUserId) {
-        Team team = teamRepository.findByMembersId(leaderId)
-                .orElseThrow(() -> new TeamNotFoundException("Команда не найдена"));
-
-        if (!teamRepository.isUserLeader(team.getId(),leaderId)){
-            throw new IllegalArgumentException("Вы не являетесь лидером команды.");
+    public void inviteUserToTeam(Integer leaderId, Integer targetUserId) {
+        if (leaderId == null || targetUserId == null) {
+            throw new IllegalArgumentException("ID пользователя не может быть null");
         }
-        if (leaderId== targetUserId) {
-            throw new IllegalArgumentException("Нельзя пригласить самого себя.");
-        }
+        Integer teamId = teamRepository.findCurrentTeamIdByUserId(leaderId)
+                .orElseThrow(() -> new TeamNotFoundException("Вы не состоите ни в одной команде"));
 
-        if (!userRepository.existsById(targetUserId)) {
-            throw new UserNotFoundException("Пользователь с id " + targetUserId + " не найден");
+        if (!teamRepository.isUserActiveLeader(teamId, leaderId).orElse(false)) {
+            throw new LeaderException("Только лидер команды может приглашать участников.");
         }
 
-        if (teamRepository.isUserInAnyTeam(targetUserId)) {
-            throw new IllegalArgumentException("Пользователь уже состоит в команде и не может быть приглашён");
+        if (leaderId.equals(targetUserId)) {
+            throw new InviteException("Нельзя пригласить самого себя.");
         }
 
-        teamRepository.addMemberToTeam(team.getId(), targetUserId);
+        if (!teamRepository.userExists(targetUserId)) {
+            throw new UserNotFoundException("Пользователь с ID " + targetUserId + " не найден");
+        }
 
-        log.info("Лидер id={} пригласил пользователя id={} в команду id={}", leaderId, targetUserId, team.getId());
+        Integer targetTeamId = teamRepository.findCurrentTeamIdByUserId(targetUserId).orElse(null);
+        if (targetTeamId != null) {
+            throw new TeamNotFoundException("Пользователь уже состоит в другой команде и не может быть приглашён");
+        }
+
+        teamRepository.addActiveMember(teamId, targetUserId);
+        String teamName = teamRepository.findTeamNameById(teamId).orElse("команды");
+        log.info("Лидер ID={} пригласил пользователя ID={} в команду '{}' (ID:{})",
+                leaderId, targetUserId, teamName, teamId);
     }
 
 
