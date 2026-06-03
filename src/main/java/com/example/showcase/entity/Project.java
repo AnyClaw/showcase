@@ -2,16 +2,14 @@ package com.example.showcase.entity;
 
 import com.example.showcase.enums.ProjectStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Table(name = "projects")
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Project {
 
     @Id

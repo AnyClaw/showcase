@@ -1,12 +1,15 @@
 package com.example.showcase.service;
 
+import com.example.showcase.dto.request.ProjectCreateRequestDTO;
 import com.example.showcase.dto.request.ProjectRequestDTO;
 import com.example.showcase.dto.response.PageResponse;
+import com.example.showcase.dto.response.ProjectBriefDTO;
 import com.example.showcase.dto.response.ProjectResponseDTO;
 import com.example.showcase.entity.Project;
 import com.example.showcase.entity.User;
 import com.example.showcase.enums.ProjectStatus;
 import com.example.showcase.exception.ProjectNotFoundException;
+import com.example.showcase.exception.UserNotFoundException;
 import com.example.showcase.mapper.ProjectMapper;
 import com.example.showcase.repository.ProjectsRepository;
 import com.example.showcase.repository.UserRepository;
@@ -19,6 +22,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -71,5 +77,50 @@ public class ProjectService {
         Page<Project> response = projectsRepository.findAll(specification, pageRequest);
 
         return PageResponse.from(response.map(projectMapper::toDto));
+    }
+
+    @Transactional
+    public ProjectResponseDTO createProject(ProjectCreateRequestDTO request, Integer creatorId) {
+        User owner = userRepository.findById(creatorId)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с ID " + creatorId + " не найден"));
+
+        Project project = Project.builder()
+                .title(request.title())
+                .projectType(request.projectType().name())
+                .department(request.department().name())
+                .target(request.target())
+                .barrier(request.barrier())
+                .existingSolution(request.existingSolution())
+                .status(ProjectStatus.ON_VERIFICATION)
+                .owner(owner)
+                .build();
+
+        Project savedProject = projectsRepository.save(project);
+        return projectMapper.toDto(savedProject);
+    }
+
+    public List<ProjectBriefDTO> getMyProjectsAsClient(
+            Integer userId,
+            String department,
+            String projectType,
+            ProjectStatus status,
+            String title) {
+
+        if (userId == null) {
+            throw new IllegalArgumentException("ID пользователя не может быть null");
+        }
+
+        String cleanDepartment = (department != null && !department.isBlank()) ? department : null;
+        String cleanProjectType = (projectType != null && !projectType.isBlank()) ? projectType : null;
+        String cleanStatus = (status != null) ? status.name() : null; // Превращаем Enum в строку для БД
+        String cleanTitle = (title != null && !title.isBlank()) ? title : null;
+
+        return projectsRepository.findProjectsByOwnerId(
+                userId,
+                cleanDepartment,
+                cleanProjectType,
+                cleanStatus,
+                cleanTitle
+        );
     }
 }

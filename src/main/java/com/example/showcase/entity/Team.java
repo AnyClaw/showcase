@@ -23,7 +23,6 @@ public class Team {
     @Column(name = "team_name", unique = true, nullable = false)
     private String name;
 
-    // ⭐ Самая важная часть: связь с пользователями через team_members
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "team_members",           // таблица-связка в БД

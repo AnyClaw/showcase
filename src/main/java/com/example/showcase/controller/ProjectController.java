@@ -1,16 +1,23 @@
 package com.example.showcase.controller;
 
+import com.example.showcase.dto.request.ProjectCreateRequestDTO;
 import com.example.showcase.dto.request.ProjectRequestDTO;
 import com.example.showcase.dto.response.PageResponse;
+import com.example.showcase.dto.response.ProjectBriefDTO;
 import com.example.showcase.dto.response.ProjectResponseDTO;
+import com.example.showcase.entity.User;
 import com.example.showcase.enums.ProjectStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -87,4 +94,24 @@ public interface ProjectController {
     @PreAuthorize("hasAuthority('CLIENT')")
     @PostMapping("/add")
     ProjectResponseDTO addProject(@RequestBody ProjectRequestDTO projectDTO);
+
+    @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'CLIENT')")
+    ProjectResponseDTO createProject(
+            @AuthenticationPrincipal User currentUser,
+            @RequestBody @Valid ProjectCreateRequestDTO request);
+
+    @GetMapping("/my")
+    @PreAuthorize("hasAnyAuthority('CLIENT')")
+    @Operation(
+            summary = "Мои проекты (для Заказчика)"
+    )
+    List<ProjectBriefDTO> getMyProjects(
+            @AuthenticationPrincipal User currentUser,
+
+            @RequestParam(required = false) String department,
+            @RequestParam(name = "project-type", required = false) String projectType,
+            @RequestParam(name = "project-status", required = false) ProjectStatus status,
+            @RequestParam(required = false) String title
+    );
 }

@@ -93,6 +93,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     //проверка на существование
     @Query(value = "SELECT EXISTS(SELECT 1 FROM users WHERE user_id = :userId)", nativeQuery = true)
     boolean userExists(@Param("userId") Integer userId);
-
+    @Query(value = "SELECT EXISTS(SELECT 1 FROM teams WHERE team_name = :teamName)", nativeQuery = true)
+    boolean existsByName(@Param("teamName") String teamName);
 
 }

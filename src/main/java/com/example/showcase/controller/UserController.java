@@ -1,12 +1,17 @@
 package com.example.showcase.controller;
 
+import com.example.showcase.dto.response.ProjectBriefDTO;
 import com.example.showcase.dto.response.UserResponseDTO;
+import com.example.showcase.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -43,5 +48,22 @@ public interface UserController {
     @GetMapping("/search")
     @PreAuthorize("isAuthenticated()")
     ResponseEntity<UserResponseDTO> findUserByEmail(@RequestParam("email") String email);
+
+    @GetMapping("/me/projects")
+    @PreAuthorize("hasAuthority('STUDENT')")
+    @Operation(
+            summary = "История проектов текущего пользователя",
+            description = """
+                Возвращает все проекты, в которых участвовал текущий пользователь,
+                с возможностью фильтрации по кафедре, типу проекта и поиску по названию.
+                """
+    )
+    @ApiResponse(responseCode = "200", description = "Проекты успешно получены")
+    List<ProjectBriefDTO> getMyProjectHistory(
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam(required = false) String department,
+            @RequestParam(name = "project-type", required = false) String projectType,
+            @RequestParam(required = false) String title
+    );
 
 }

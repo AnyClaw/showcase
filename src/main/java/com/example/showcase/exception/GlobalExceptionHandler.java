@@ -149,4 +149,13 @@ public class GlobalExceptionHandler {
                 .code("INVALID_PARAMETER_FOR_INVITE")
                 .build());
     }
+
+    @ExceptionHandler(TeamAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleTeamAlreadyExists(TeamAlreadyExistsException  e, WebRequest request) {
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse
+                .of(HttpStatus.BAD_REQUEST, request)
+                .message(e.getMessage())
+                .code("INVALID_PARAMETER_FOR_TEAM_CREATE")
+                .build());
+    }
 }

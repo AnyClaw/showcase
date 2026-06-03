@@ -1,11 +1,16 @@
 package com.example.showcase.service;
 
+import com.example.showcase.dto.response.ProjectBriefDTO;
 import com.example.showcase.dto.response.TeamDTO;
 import com.example.showcase.dto.response.TeamMemberDTO;
 import com.example.showcase.dto.response.TeamQueryResult;
 import com.example.showcase.entity.Team;
+import com.example.showcase.entity.TeamMember;
+import com.example.showcase.entity.User;
 import com.example.showcase.exception.*;
 import com.example.showcase.mapper.TeamMapper;
+import com.example.showcase.repository.ProjectsRepository;
+import com.example.showcase.repository.TeamMemberRepository;
 import com.example.showcase.repository.TeamRepository;
 import com.example.showcase.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -22,9 +28,10 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
-
+    private final ProjectsRepository projectRepository;
+    private final TeamMemberRepository teamMemberRepository;
     @Transactional(readOnly = true)
-    public TeamDTO getMyTeam(Integer userId) {
+    public TeamDTO getMyTeamMembers(Integer userId) {
             if (userId == null) {
                 throw new UserNotFoundException("User not authenticated");
             }
@@ -149,7 +156,12 @@ public class TeamService {
 
         log.info("Лидерство в команде ID={} передано: {} → {}", teamId, currentLeaderId, newLeaderId);
     }
-    // DEMO
+    public void inviteUserToTeamByEmail(Integer inviterId, String email) {
+        User invitedUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с email " + email + " не найден"));
+
+        inviteUserToTeam(inviterId, invitedUser.getId());
+    }
     @Transactional
     public void inviteUserToTeam(Integer leaderId, Integer targetUserId) {
         if (leaderId == null || targetUserId == null) {
@@ -182,4 +194,69 @@ public class TeamService {
     }
 
 
+    public List<ProjectBriefDTO> getMyTeamProjectsBrief(
+            Integer userId,
+            String department,
+            String projectType,
+            String status,
+            String title) {
+        if (userId == null) {
+            throw new UserNotFoundException("User not authenticated");
+        }
+        Integer teamId = teamRepository.findCurrentTeamIdByUserId(userId)
+                .orElseThrow(() -> new TeamNotFoundException("Команда не найдена"));
+
+        String cleanDepartment = (department != null && !department.isBlank()) ? department : null;
+        String cleanProjectType = (projectType != null && !projectType.isBlank()) ? projectType : null;
+        String cleanTitle = (title != null && !title.isBlank()) ? title : null;
+
+        return projectRepository.findProjectsBriefByTeamId(
+                teamId,
+                cleanDepartment,
+                cleanProjectType,
+                status,
+                cleanTitle
+        );
+}
+
+    @Transactional
+    public TeamDTO createTeam(Integer userId, String teamName) {
+        if (teamRepository.findCurrentTeamIdByUserId(userId).isPresent()) {
+            throw new TeamAlreadyExistsException("Вы уже состоите в команде");
+        }
+        if (teamRepository.existsByName(teamName)) {
+            throw new TeamAlreadyExistsException("Команда с таким названием уже существует");
+        }
+
+        Team newTeam = new Team();
+        newTeam.setName(teamName);
+        Team savedTeam = teamRepository.save(newTeam);
+
+        User owner = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        TeamMember leader = new TeamMember();
+        leader.setTeamId(savedTeam.getId());
+        leader.setUserId(userId);
+        leader.setIsLeader(true);
+        leader.setJoinedAt(Instant.now());
+        leader.setLeftAt(null);
+        teamMemberRepository.save(leader);
+
+        TeamMemberDTO leaderDto = new TeamMemberDTO(
+                owner.getId(),
+                owner.getFirstName(),
+                owner.getLastName(),
+                owner.getEmail(),
+                true,
+                Instant.now(),
+                null
+        );
+
+        return new TeamDTO(
+                savedTeam.getId(),
+                savedTeam.getName(),
+                List.of(leaderDto)
+        );
+    }
 }
