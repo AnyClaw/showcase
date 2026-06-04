@@ -24,14 +24,14 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping("/my")
-    @PreAuthorize("hasAnyAuthority('TEACHER', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('TEACHER', 'ADMINISTRATOR')")
 
     public List<GroupBriefDTO> getMyGroups(@AuthenticationPrincipal User currentUser) {
         return groupService.getMyGroups(currentUser.getId());
     }
 
     @GetMapping("/my/with-students")
-    @PreAuthorize("hasAnyAuthority('TEACHER', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('TEACHER', 'ADMINISTRATOR')")
     public List<GroupWithStudentsDTO> getMyGroupsWithStudents(
             @AuthenticationPrincipal User currentUser,
             @RequestParam(required = false) String groupName) {
