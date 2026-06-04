@@ -35,6 +35,7 @@ public class ProjectService {
     private final UserRepository userRepository;
     private final ProjectMapper projectMapper;
 
+
     public ProjectResponseDTO getById(int id) {
         return projectMapper.toDto(projectsRepository
                 .findById(id)
@@ -107,7 +108,7 @@ public class ProjectService {
             String title) {
 
         if (userId == null) {
-            throw new IllegalArgumentException("ID пользователя не может быть null");
+            throw new UserNotFoundException("ID пользователя не может быть null");
         }
 
         String cleanDepartment = (department != null && !department.isBlank()) ? department : null;
@@ -121,6 +122,32 @@ public class ProjectService {
                 cleanProjectType,
                 cleanStatus,
                 cleanTitle
+        );
+    }
+
+    public List<ProjectBriefDTO> getProjectsOfMyGroup(
+            Integer teacherId,
+            String department,
+            String projectType,
+            ProjectStatus status,
+            String title,
+            Integer groupId) {
+        if (teacherId == null) {
+            throw new UserNotFoundException("Передан null userID)");
+        }
+
+        String cleanDepartment = (department != null && !department.isBlank()) ? department : null;
+        String cleanProjectType = (projectType != null && !projectType.isBlank()) ? projectType : null;
+        String cleanStatus = (status != null) ? status.name() : null;
+        String cleanTitle = (title != null && !title.isBlank()) ? title : null;
+
+        return projectsRepository.findProjectsByTeacherGroup(
+                teacherId,
+                cleanDepartment,
+                cleanProjectType,
+                cleanStatus,
+                cleanTitle,
+                groupId
         );
     }
 }

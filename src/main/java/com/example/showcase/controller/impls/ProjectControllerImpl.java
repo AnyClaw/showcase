@@ -62,4 +62,23 @@ public class ProjectControllerImpl implements ProjectController {
                 title
         );
     }
+
+    @Override
+    public List<ProjectBriefDTO> getProjectsOfMyGroup(
+            User currentUser,
+            String department,
+            String projectType,
+            ProjectStatus status,
+            String title,
+            Integer groupId
+    ) {
+        return projectService.getProjectsOfMyGroup(
+                currentUser.getId(),
+                department,
+                projectType,
+                status,
+                title,
+                groupId
+        );
+    }
 }

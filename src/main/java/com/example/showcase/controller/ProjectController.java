@@ -114,4 +114,16 @@ public interface ProjectController {
             @RequestParam(name = "project-status", required = false) ProjectStatus status,
             @RequestParam(required = false) String title
     );
+
+    @GetMapping("/teacher/my-group")
+    @PreAuthorize("hasAnyAuthority('TEACHER', 'ADMINISTRATOR')")
+    List<ProjectBriefDTO> getProjectsOfMyGroup(
+            @AuthenticationPrincipal User currentUser,
+
+            @RequestParam(required = false) String department,
+            @RequestParam(name = "project-type", required = false) String projectType,
+            @RequestParam(name = "project-status", required = false) ProjectStatus status,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Integer groupId
+    );
 }
