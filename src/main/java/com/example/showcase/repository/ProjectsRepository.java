@@ -118,6 +118,37 @@ public interface ProjectsRepository extends
             @Param("title") String title,
             @Param("groupId") Integer groupId
     );
+
+    @Query(value = """
+        SELECT DISTINCT
+            p.project_id AS projectId,
+            p.title AS title,
+            p.target AS target,
+            p.department AS department,
+            p.project_type AS projectType,
+            p.project_status AS projectStatus
+        FROM projects p
+        LEFT JOIN users u ON p.user_id = u.user_id
+        WHERE (:department IS NULL OR LOWER(p.department) = LOWER(:department))
+          AND (:projectType IS NULL OR LOWER(p.project_type) = LOWER(:projectType))
+          AND (:status IS NULL OR p.project_status = :status)
+          AND (:title IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :title, '%')))
+          AND (:groupId IS NULL OR u.group_id = :groupId)
+          AND (:teamId IS NULL OR EXISTS (
+              SELECT 1 FROM project_stages ps 
+              WHERE ps.project_id = p.project_id 
+              AND ps.team_id = :teamId
+          ))
+        ORDER BY p.project_id DESC
+        """, nativeQuery = true)
+    List<ProjectBriefDTO> findAllProjectsForAdmin(
+            @Param("department") String department,
+            @Param("projectType") String projectType,
+            @Param("status") String status,
+            @Param("title") String title,
+            @Param("groupId") Integer groupId,
+            @Param("teamId") Integer teamId
+    );
 }
 
 

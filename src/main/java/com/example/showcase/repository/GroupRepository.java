@@ -4,6 +4,7 @@ import com.example.showcase.dto.response.GroupBriefDTO;
 import com.example.showcase.dto.response.GroupStudentResult;
 import com.example.showcase.entity.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -38,6 +39,32 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     List<GroupStudentResult> findGroupsWithStudentsByTeacherId(
             @Param("teacherId") Integer teacherId,
             @Param("groupName") String groupName // <-- Новый параметр
+    );
+
+    @Modifying
+    @Query(value = "UPDATE users SET group_id = :groupId WHERE user_id IN :userIds", nativeQuery = true)
+    void assignStudentsToGroup(@Param("groupId") Integer groupId, @Param("userIds") List<Integer> userIds);
+
+    @Modifying
+    @Query(value = "UPDATE users SET group_id = NULL WHERE user_id IN :userIds AND group_id = :groupId", nativeQuery = true)
+    void removeStudentsFromGroupNative(@Param("groupId") Integer groupId, @Param("userIds") List<Integer> userIds);
+
+    @Query(value = """
+        SELECT 
+            g.group_id AS groupId,
+            g.group_name AS groupName,
+            u.user_id AS studentId,
+            u.first_name AS firstName,
+            u.last_name AS lastName,
+            u.middle_name AS middleName,
+            u.email AS email
+        FROM groups g
+        LEFT JOIN users u ON g.group_id = u.group_id
+        WHERE (:groupName IS NULL OR LOWER(g.group_name) LIKE LOWER(CONCAT('%', :groupName, '%')))
+        ORDER BY g.group_id, u.last_name, u.first_name
+        """, nativeQuery = true)
+    List<GroupStudentResult> findAllGroupsWithStudents(
+            @Param("groupName") String groupName
     );
 
 }

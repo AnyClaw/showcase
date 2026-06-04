@@ -150,4 +150,27 @@ public class ProjectService {
                 groupId
         );
     }
+
+    public List<ProjectBriefDTO> getAllProjectsForAdmin(
+            String department,
+            String projectType,
+            ProjectStatus status,
+            String title,
+            Integer groupId,
+            Integer teamId) {
+
+        String cleanDepartment = (department != null && !department.isBlank()) ? department : null;
+        String cleanProjectType = (projectType != null && !projectType.isBlank()) ? projectType : null;
+        String cleanStatus = (status != null) ? status.name() : null;
+        String cleanTitle = (title != null && !title.isBlank()) ? title : null;
+
+        return projectsRepository.findAllProjectsForAdmin(
+                cleanDepartment,
+                cleanProjectType,
+                cleanStatus,
+                cleanTitle,
+                groupId,
+                teamId
+        );
+    }
 }

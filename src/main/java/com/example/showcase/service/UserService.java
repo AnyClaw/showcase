@@ -1,6 +1,7 @@
 package com.example.showcase.service;
 
 import com.example.showcase.dto.response.ProjectBriefDTO;
+import com.example.showcase.dto.response.UserBriefDTO;
 import com.example.showcase.dto.response.UserResponseDTO;
 import com.example.showcase.entity.User;
 import com.example.showcase.exception.UserNotFoundException;
@@ -67,5 +68,13 @@ public class UserService {
         String cleanTitle = (title != null && !title.isBlank()) ? title : null;
 
         return projectRepository.findUserProjectHistory(userId, cleanDepartment, cleanProjectType, cleanTitle);
+    }
+
+    public List<UserBriefDTO> getAllUsersForAdmin(String role, Integer groupId, String fullName, String email) {
+        String cleanRole = (role != null && !role.isBlank()) ? role : null;
+        String cleanFullName = (fullName != null && !fullName.isBlank()) ? fullName : null;
+        String cleanEmail = (email != null && !email.isBlank()) ? email : null;
+
+        return userRepository.findAllUsersForAdmin(cleanRole, groupId, cleanFullName, cleanEmail);
     }
 }
